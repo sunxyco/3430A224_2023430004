@@ -7,6 +7,7 @@ double square(double x) // square a double precision floating-point number
 
 void print_square(double x)
 {
+    //se utiliza el << para "concadenar strings/datos en una linea de texto/buffer"
     std::cout << "the square of " << x << " is " << square(x) << '\n';
 }
 
