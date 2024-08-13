@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+using namespace std;
 
 /*
 ● Lea desde la entrada estándar: Leer un número y almacenarlo en una variable. ~ si
@@ -23,7 +25,7 @@ bool par(int numero)
     case 1:
         return false;
     default:
-        std::cout << "nose que hiciste para que salga estó";
+        cout << "nose que hiciste para que salga estó";
         return false;
     } 
 
@@ -39,15 +41,15 @@ void imprimir_par_impar(int numero)
     //segun el bool de la funcion anterior se imprime el mensaje si es par  o impar
     if (residuo)
     {
-        std::cout << numero << " ~par\n";
+        cout << numero << " ~par\n";
     } else
     {
-        std::cout << numero << " ~impar\n";
+        cout << numero << " ~impar\n";
     }
 }
 
 //la funcion cuenta todos los espacios que tenga una cadena de texto
-int longitud(std::string cadena_de_texto)
+int longitud(string cadena_de_texto)
 {
     //procesamiento de la cadena de texto
 
@@ -77,52 +79,65 @@ void contar_numeros_1_10()
 
 int main()
 {
-    std::cout << "Ingrese un numero\n>";
+    cout << "Ingrese un numero\n>";
 
     //se define la varible vacia
     int user_input = 0;
 
-    //se llama a std::cin para que lea la linea, el usuario ingresa un numero
+    //se llama a cin para que lea la linea, el usuario ingresa un numero
     //luego el numero ingresado se guarda en la variable
-    std::cin >> user_input;
+    cin >> user_input;
+
+    
 
     //se imprime el numero ingresado
-    std::cout << "\nnumero ingresado por el usuario ~" << user_input << "~\n\n";
+    cout << "\nnumero ingresado por el usuario ~" << user_input << "~\n\n";
 
 
-    std::cout << "numeros del 1 al 10\n";
+    cout << "numeros del 1 al 10\n";
 
-    //implementar for
+    //implementar for (hecho)
     contar_numeros_1_10();
 
     imprimir_par_impar(user_input);
 
     //funcion leer cadena ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    std::string mi_cadena = "Hola Mundo";
+    string mi_cadena = "Hola Mundo";
+    string mi_cadena_usuario;
 
+    /* aver vamos a intentar almacenar la variable en una ::string
     //se pide la cadena sin espacios porque si se toma un espacio la variable guarda la cadena hasta el espacio
     //escribe ~ "Hola Mundo", se guarda ~ "Hola"
-    std::cout << "\n\nCadena almacenada en el codigo --> " << mi_cadena << "\n\nIngrese una cadena de texto\nSIN ESPACIOS\n";
+    cout << "\n\nCadena almacenada en el codigo --> " << mi_cadena << "\n\nIngrese una cadena de texto\nSIN ESPACIOS\n";
+    */
+
+    cout << "ingrese una cadena de texto\n>";
+
+    //↓↓ se pusó dos veces el .getline ya que en el primero se toma el "\n" como un caracter valido y continua la execucion sin pedirle
+    //al usuario realmente la cadena de texto, en la segunda ahora si se le pide al usuario que ingrese una cadena de texto
+    getline(cin, mi_cadena_usuario);
+    //en la ejecucion se ve como si solo existiera un solo getline
+    getline(cin, mi_cadena_usuario);
 
     //se guarda la cadena que ingrese el usuario
-    std::string user_input_cadena = "0";
-    std::cin >> user_input_cadena;
+    //string user_input_cadena = "0";
+    //cin >> user_input_cadena;
+    //(borrar)
 
-    std::cout << "\n\nCadena del usuario --> " << user_input_cadena << "\n";
+    cout << "\n\nCadena del usuario --> " << mi_cadena_usuario << "\n";
     
-    /*//ambas funciones devuelven el mismo numero
+    /*//ambas funciones devuelven el mismo numero ~ podria haber usado estas funciones para saber el largo de la cadena, pero se opto por hacer una funcion propia
     int longitud1 = mi_cadena.size();
-    std::cout << "El tamaño de la cadena es de " << longitud1 << " caracteres (.size())\n\n";
-
+    cout << "El tamaño de la cadena es de " << longitud1 << " caracteres (.size())\n\n";
     int longitud2 = mi_cadena.length();
-    std::cout << "El tamaño de la cadena es de " << longitud2 << " caracteres (.length())";*/
+    cout << "El tamaño de la cadena es de " << longitud2 << " caracteres (.length())";*/
 
     int longitud_cadena1 = longitud(mi_cadena);
-    int longitud_cadena2 = longitud(user_input_cadena);
+    int longitud_cadena2 = longitud(mi_cadena_usuario);
 
-    std::cout << "\n\nlongitud: " << longitud_cadena1 << "caracteres ~ Cadena: " << mi_cadena << "\n";
-    std::cout << "\nlongitud: " << longitud_cadena2 << "caracteres ~ Cadena: " << user_input_cadena << "\n";
+    cout << "\n\nlongitud: " << longitud_cadena1 << "caracteres ~ Cadena: " << mi_cadena << "\n";
+    cout << "\nlongitud: " << longitud_cadena2 << "caracteres ~ Cadena: " << mi_cadena_usuario << "\n";
 
     return 0;
 }
