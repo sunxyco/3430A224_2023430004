@@ -56,7 +56,7 @@ int longitud(std::string cadena_de_texto)
     int longitud = 0;
     //for (inicialización; condición; actualización)
     //se iterara cada caracter mientras que el caracter no sea \0 que es el final de la cadena
-    for (int i = 0; cadena_de_texto[i] != '\0'; ++i)
+    for (int i = 0; cadena_de_texto[i] != '\0'; i = i + 1)
     {
         //se sumara 1 a la longitud por cada caracter en la cadena
         longitud = longitud + 1;
@@ -66,9 +66,18 @@ int longitud(std::string cadena_de_texto)
     
 }
 
+void contar_numeros_1_10()
+{
+    //for (inicialización; condición; actualización)
+    for (int i = 1; i <= 10; i = i+1)
+    {
+        imprimir_par_impar(i);
+    }
+}
+
 int main()
 {
-    std::cout << "Ingrese un numero\n";
+    std::cout << "Ingrese un numero\n>";
 
     //se define la varible vacia
     int user_input = 0;
@@ -83,18 +92,9 @@ int main()
 
     std::cout << "numeros del 1 al 10\n";
 
-    //true si es par ~ false si es impar   
-    imprimir_par_impar(1);
-    imprimir_par_impar(2);
-    imprimir_par_impar(2);
-    imprimir_par_impar(3);
-    imprimir_par_impar(4);
-    imprimir_par_impar(5);
-    imprimir_par_impar(6);
-    imprimir_par_impar(7);
-    imprimir_par_impar(8);
-    imprimir_par_impar(9);
-    imprimir_par_impar(10);
+    //implementar for
+    contar_numeros_1_10();
+
     imprimir_par_impar(user_input);
 
     //funcion leer cadena ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
