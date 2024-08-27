@@ -39,14 +39,32 @@ void agregar_persona(Paciente*& head, const string& nombre, int edad, double alt
 void imprimir_personas(const Paciente* head)
 {
 
-    const Paciente* current = head;
+    const Paciente* actual = head;
     int i = 1;
-    while (current != nullptr) {
-        cout << "Paciente" << i << "\nnombre: " << current->nombre << " edad: " << current->edad << " altura: " << current->altura << "\n\n";
-        current = current->siguiente;
+    while (actual != nullptr) {
+        cout << "Paciente" << i << "\nnombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << "\n\n";
+        actual = actual->siguiente;
         i = i + 1;
     }
+}
 
+void eliminarPaciente(Paciente*& head, const string& nombre) {
+    Paciente* actual = head;
+    Paciente* previous = nullptr;
+
+    while (actual != nullptr && actual->nombre != nombre) {
+        previous = actual;
+        actual = actual->siguiente;
+    }
+
+    if (actual != nullptr) {
+        if (previous == nullptr) {
+            head = actual->siguiente;
+        } else {
+            previous->siguiente = actual->siguiente;
+        }
+        delete actual;
+    }
 }
 
 int main ()
@@ -59,8 +77,17 @@ int main ()
     agregar_persona(head, "Martin", 11, 1.50);
     agregar_persona(head, "Carlota", 23, 1.70);
     agregar_persona(head, "Gonzalo", 45, 1.90);
+    agregar_persona(head, "Daniel", 19, 1.79);
 
     cout << "Pacientes actuales \n\n";
+    imprimir_personas(head);
+
+    //eliminar paciente
+    eliminarPaciente(head, "Gonzalo");
+
+
+    cout << "Se elimino a Gonzalo ~ Nueva lista\n\n";
+
     imprimir_personas(head);
 
     return 0;
