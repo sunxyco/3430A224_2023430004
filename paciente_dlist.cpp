@@ -23,8 +23,45 @@ struct Paciente
     Paciente* siguiente;
 };
 
-int main () {
+//se agrega cada nuevo paciente y se genera una conexion entra cada uno 
+void agregar_persona(Paciente*& head, const string& nombre, int edad, double altura)
+{
+    Paciente* nuevoPaciente = new Paciente();
+    nuevoPaciente->nombre = nombre;
+    nuevoPaciente->edad = edad;
+    nuevoPaciente->siguiente = head;
+    nuevoPaciente->altura = altura;
+    head = nuevoPaciente;
+}
 
 
-   return 0;
+
+void imprimir_personas(const Paciente* head)
+{
+
+    const Paciente* current = head;
+    int i = 1;
+    while (current != nullptr) {
+        cout << "Paciente" << i << "\nnombre: " << current->nombre << " edad: " << current->edad << " altura: " << current->altura << "\n\n";
+        current = current->siguiente;
+        i = i + 1;
+    }
+
+}
+
+int main ()
+{
+
+    //puntero principal
+    Paciente* head = nullptr;
+
+    //se agregan las personas a la lista
+    agregar_persona(head, "Martin", 11, 1.50);
+    agregar_persona(head, "Carlota", 23, 1.70);
+    agregar_persona(head, "Gonzalo", 45, 1.90);
+
+    cout << "Pacientes actuales \n\n";
+    imprimir_personas(head);
+
+    return 0;
 }
