@@ -42,7 +42,7 @@ void imprimir_personas(const Paciente* head)
     const Paciente* actual = head;
     int i = 1;
     while (actual != nullptr) {
-        cout << "Paciente" << i << "\nnombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << "\n\n";
+        cout << "Paciente " << i << " nombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << "\n";
         actual = actual->siguiente;
         i = i + 1;
     }
@@ -86,9 +86,16 @@ int main ()
     eliminarPaciente(head, "Gonzalo");
 
 
-    cout << "Se elimino a Gonzalo ~ Nueva lista\n\n";
-
+    cout << "\nSe elimino a Gonzalo ~ Nueva lista\n\n";
+    //se imprime la lsita actual con un paciente eliminado
     imprimir_personas(head);
+
+    //se libera la memoria
+    while (head != nullptr) {
+        Paciente* temporal = head;
+        head = head->siguiente;
+        delete temporal;
+    }
 
     return 0;
 }
