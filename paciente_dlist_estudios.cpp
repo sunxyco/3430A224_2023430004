@@ -49,46 +49,85 @@ void agregar_persona(Paciente*& head, const string& nombre, int edad, double alt
 string mensaje_imc(double imc_paciente)
 {
     if (imc_paciente < 18.5) {
-            return "Bajo peso";
+            return " Bajo peso";
         } else if (imc_paciente >= 18.5 && imc_paciente <= 24.9) {
-            return "Peso normal";
+            return " Peso normal";
         } else if (imc_paciente >= 25 && imc_paciente <= 29.9) {
-            return "Sobrepeso";
+            return " Sobrepeso";
         } else if (imc_paciente >= 30) {
-            return "Obesidad";
+            return " Obesidad";
         } else {
             return "ERROR";
         }
 }
 
+double calcular_promedio_edad(const Paciente* head)
+{
+    double suma_edades = 0;
+    const Paciente* actual = head;
+    int i = 0;
+
+    while (actual != nullptr){
+        suma_edades += actual->edad;
+
+        actual = actual -> siguiente;
+        i = i + 1;
+    }
+
+    double promedio_edad = suma_edades / (i);
+
+    return promedio_edad;
+}
+
+double calcular_promedio_peso(const Paciente* head)
+{
+    double suma_peso = 0;
+    const Paciente* actual = head;
+    int i = 0;
+
+    while (actual != nullptr){
+        suma_peso += actual->peso;
+
+        actual = actual -> siguiente;
+        i = i + 1;
+    }
+
+    double promedio_peso = suma_peso / (i);
+
+    return promedio_peso;
+}
+
+double obtener_imc(const Paciente* actual)
+{   
+    double imc = ((actual->peso) / ((actual->altura) * (actual->altura)));
+
+    return imc;
+}
+
+void imprimir_imc_pacientes(const Paciente* head)
+{
+    const Paciente* actual = head;
+    while (actual != nullptr)
+    {
+        double imc_paciente = obtener_imc(actual);
+        
+        cout << "IMC de " << actual->nombre << " ~ " << imc_paciente << mensaje_imc(imc_paciente) << "\n";
+
+        actual = actual -> siguiente;
+    }
+    
+}
+
 void imprimir_personas(const Paciente* head)
 {
-    int suma_edades = 0;
-    int suma_peso = 0;
-    double suma_altura = 0;
-
     const Paciente* actual = head;
     int i = 1;
     while (actual != nullptr) {
-        double imc_paciente = ((actual->peso) / ((actual->altura) * (actual->altura)));
-        string mensaje_sobre_imc = mensaje_imc(imc_paciente);
-
-        cout << "Paciente " << i << " nombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << "m peso: " << actual->peso << " imc: " << imc_paciente << " " << mensaje_sobre_imc << "\n";
-        
-        suma_edades += actual->edad;
-        suma_peso += actual->peso;
-        suma_altura += actual->altura;
+        cout << "Paciente " << i << " nombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << "m peso: " << actual->peso << "\n";
 
         actual = actual->siguiente;
         i++;
     }
-
-    // Imprimir datos resultantes de la corrida
-    double promedio_edad = static_cast<double>(suma_edades) / (i - 1);
-    double promedio_peso = static_cast<double>(suma_peso) / (i - 1);
-    double promedio_altura = suma_altura / (i - 1);
-
-    cout << "Datos Resultantes\nPromedio edad: " << promedio_edad << "\nPromedio peso: " << promedio_peso << "\nPromedio altura: " << promedio_altura << "\n";
 }
 
 void eliminarPaciente(Paciente*& head, const string& nombre) {
@@ -110,6 +149,17 @@ void eliminarPaciente(Paciente*& head, const string& nombre) {
     }
 }
 
+void imprimir_datos(Paciente*& head)
+{
+    double promedio_edades = calcular_promedio_edad(head);
+    cout << "El promedio de edades es: " << promedio_edades << "\n";
+
+    double promedio_peso = calcular_promedio_peso(head);
+    cout << "El promedio de Peso es: " << promedio_peso << "\n\n";
+
+    imprimir_imc_pacientes(head);
+}
+
 int main ()
 {
 
@@ -117,21 +167,27 @@ int main ()
     Paciente* head = nullptr;
 
     //se agregan las personas a la lista
-    agregar_persona(head, "Martin", 11, 1.50, 47);
+    agregar_persona(head, "Martin", 11, 1.50, 33);
     agregar_persona(head, "Carlota", 23, 1.70, 61);
-    agregar_persona(head, "Gonzalo", 45, 1.9, 77);
-    agregar_persona(head, "Daniel", 19, 1.79, 120);
+    agregar_persona(head, "Gonzalo", 45, 1.9, 120);
+    agregar_persona(head, "Daniel", 19, 1.79, 79);
+    agregar_persona(head, "Oscar", 24, 1.82, 55);
+    agregar_persona(head, "Marcelo", 64, 1.87, 90);
 
     cout << "Pacientes actuales \n\n";
     imprimir_personas(head);
+    cout << "\nDatos de los pacientes:\n\n";
+    imprimir_datos(head);
 
     //eliminar paciente
     eliminarPaciente(head, "Gonzalo");
 
-
-    cout << "\nSe elimino a Gonzalo ~ Nueva lista\n\n";
+    cout << "\n~~~~ Se elimino a Gonzalo ~ Nueva lista ~~~~\n\n";
     //se imprime la lsita actual con un paciente eliminado
     imprimir_personas(head);
+    cout << "\nDatos de los pacientes:\n\n";
+    imprimir_datos(head);
+
 
     //se libera la memoria
     while (head != nullptr) {
