@@ -63,22 +63,32 @@ string mensaje_imc(double imc_paciente)
 
 void imprimir_personas(const Paciente* head)
 {
-    //-promedio edad -promedio peso -promedio altura -imc (peso/altura^2)
     int suma_edades = 0;
     int suma_peso = 0;
-    double altura = 0;
+    double suma_altura = 0;
 
     const Paciente* actual = head;
     int i = 1;
     while (actual != nullptr) {
-        double imc_paciente = ((actual->peso) / ((actual->altura)*(actual->altura)));
-
+        double imc_paciente = ((actual->peso) / ((actual->altura) * (actual->altura)));
         string mensaje_sobre_imc = mensaje_imc(imc_paciente);
 
-        cout << "Paciente " << i << " nombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << " peso: " << actual->peso << " imc: " << imc_paciente << " " << mensaje_sobre_imc << "\n";
+        cout << "Paciente " << i << " nombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << "m peso: " << actual->peso << " imc: " << imc_paciente << " " << mensaje_sobre_imc << "\n";
+        
+        suma_edades += actual->edad;
+        suma_peso += actual->peso;
+        suma_altura += actual->altura;
+
         actual = actual->siguiente;
-        i = i + 1;
+        i++;
     }
+
+    // Imprimir datos resultantes de la corrida
+    double promedio_edad = static_cast<double>(suma_edades) / (i - 1);
+    double promedio_peso = static_cast<double>(suma_peso) / (i - 1);
+    double promedio_altura = suma_altura / (i - 1);
+
+    cout << "Datos Resultantes\nPromedio edad: " << promedio_edad << "\nPromedio peso: " << promedio_peso << "\nPromedio altura: " << promedio_altura << "\n";
 }
 
 void eliminarPaciente(Paciente*& head, const string& nombre) {
