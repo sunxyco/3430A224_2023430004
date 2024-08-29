@@ -30,12 +30,12 @@ void imprimir_pacientes(const Paciente* head)
     const Paciente* actual = head;
     int i = 1;
     while (actual != nullptr) {
-        cout << "Paciente " << i << " nombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << "m peso: " << actual->peso << "kg\n";
+        cout << "Paciente " << i << "\nNombre: " << actual->nombre << " Edad: " << actual->edad << " Altura: " << actual->altura << "m Peso: " << actual->peso << "kg\n";
 
         actual = actual->siguiente;
         i++;
     }
-
+    cout << "\n\n";
 }
 
 //se agrega cada nuevo paciente y se genera una conexion entra cada uno 
@@ -105,6 +105,7 @@ double calcular_promedio_peso(const Paciente* head)
     return promedio_peso;
 }
 
+//retorna un mensaje segun el imc del paciente
 string mensaje_imc(double imc_paciente)
 {
     if (imc_paciente < 18.5) {
@@ -129,6 +130,7 @@ double obtener_imc(const Paciente* actual)
 
 void imprimir_imc_pacientes(const Paciente* head)
 {
+    cout << "~IMC de todos los pacientes actuales\n\n";
     const Paciente* actual = head;
     while (actual != nullptr)
     {
@@ -138,6 +140,7 @@ void imprimir_imc_pacientes(const Paciente* head)
 
         actual = actual -> siguiente;
     }
+    cout << "\n\n";
 }
 
 void cargar_pacientes_desde_csv(Paciente*& head, const std::string& ruta)
@@ -183,6 +186,8 @@ void cargar_pacientes_desde_csv(Paciente*& head, const std::string& ruta)
     }
 
     archivo.close();
+
+    cout << "\n\n";
 }
 
 void guardar_pacientes_en_csv(Paciente* head, const string& ruta)
@@ -209,7 +214,7 @@ void guardar_pacientes_en_csv(Paciente* head, const string& ruta)
     }
 
     archivo.close();
-    cout << "Datos guardados en " << ruta << endl;
+    cout << "Datos correctamente guardados\n\n";
 }
 
 int main()
@@ -222,10 +227,10 @@ int main()
 
     while (ingreso_usuario != "salir")
     {
-        cout << "Opciones de Ingreso:\n\n1~ Agregar Paciente\n2~ Eliminar Paciente\n3~ Imprimir Pacientes Actuales\n4~ Imprimir promedio de Edad\n5~ Imprimir promedio de Peso\n6~ Imprimir IMC pacientes\n7~ cargar pacientes desde archivo\n8~ guardar pacientes en un archivo\nsalir~ cerrar el programa\n\n~~";
+        cout << "Opciones de Ingreso:\n\n1~ Agregar Paciente\n2~ Eliminar Paciente\n3~ Imprimir Pacientes Actuales\n4~ Imprimir promedio de Edad\n5~ Imprimir promedio de Peso\n6~ Imprimir IMC pacientes\n7~ cargar pacientes desde archivo\n8~ guardar pacientes en un archivo\nsalir~ cerrar el programa\n\n> ";
         cin >> ingreso_usuario;
 
-        cout << "\n\n\n~~" << ingreso_usuario;
+        //cout << "\n\n\n>" << ingreso_usuario;
 
         /*1~ Agregar Paciente
         2~ Eliminar Paciente
@@ -247,43 +252,46 @@ int main()
 
         //1 agregar paciente            lsito
         if (ingreso_usuario == "1") {
-            cout << "1";
             //se le pide que agregue nombre, edad, altura, peso
             string nombre;
             int edad;
             double altura;
             int peso;
 
-            cout << "Ingrese el Nombre:\n";
+            cout << "Ingrese el Nombre:\n> ";
             cin >> nombre;
 
             // Solicita la edad
-            cout << "Ingrese la Edad:\n";
+            cout << "Ingrese la Edad:\n> ";
             cin >> edad;
 
             // Solicita la altura
-            cout << "Ingrese la Altura (en m(decimal)):\n";
+            cout << "Ingrese la Altura (decimal x.x):\n> ";
             cin >> altura;
 
             // Solicita el peso
-            cout << "Ingrese el Peso (en kg(entero)):\n";
+            cout << "Ingrese el Peso (entero x):\n> ";
             cin >> peso;
 
             agregar_persona(head, nombre, edad, altura, peso);
+
+            cout << "\n\nSe Agregó Correctamente a...\n\nPaciente <" << nombre << "~ Edad: " << edad << "años Altura: " << altura << " Peso: "<< peso << "kg\n\n";
         }
 
         //eliminar paciente             lsito
         if (ingreso_usuario == "2") {
-            cout << "2";
             //segun el nombre ingresado se elimina el paciente
             string paciente_a_eliminar;
+            cout << "Pacientes Actuales\n\n";
+            imprimir_pacientes(head);
+            cout << "Ingrese el nombre de el paciente que desea eliminar\n\n> ";
             cin >> paciente_a_eliminar;
             eliminarPaciente(head, paciente_a_eliminar);
+            cout << "Se a Eliminado Correctamente al paciente\n>" << paciente_a_eliminar <<"\n\n";
         }
 
         //imprime los pacientes actuales lsito
         if (ingreso_usuario == "3") {
-            cout << "3";
             cout << "Pacientes actuales \n\n";
             imprimir_pacientes(head);
 
@@ -291,40 +299,36 @@ int main()
 
         //imprimir promedio de edad
         if (ingreso_usuario == "4") {
-            cout << "4";
             double promedio_edades = calcular_promedio_edad(head);
-            cout << "El promedio de edades es: " << promedio_edades << "\n";
+            cout << "El promedio de edades es: " << promedio_edades << " Años\n";
         }
 
         //imprimir promedio de peso
         if (ingreso_usuario == "5") {
-            cout << "5";
             double promedio_peso = calcular_promedio_peso(head);
-            cout << "El promedio de Peso es: " << promedio_peso << "\n\n";
+            cout << "El promedio de Peso es: " << promedio_peso << "kg\n\n";
         }
 
-        //imprimir IMC pacientes
+        //imprimir IMC de cada paciente
         if (ingreso_usuario == "6") {
-            cout << "6";
             imprimir_imc_pacientes(head);
         }
 
-        //cargar pacientes desde archivo
+        //cargar pacientes desde archivo ~ Esta funcion solo sirve para leer un archivo csv "datos.csv" que este en la misma ruta que el ejecutable, ojo con eso
         if (ingreso_usuario == "7") {
-            cout << "7";
             string ruta_ejemplo = "datos.csv";
+            cout << "Nuevos Pacientes Cargados desde CSV\n\n";
             cargar_pacientes_desde_csv(head, ruta_ejemplo);
         }
 
-        //guardar pacientes en un archivo
+        //guardar pacientes en un archivo en la misma ruta del ejecutable
         if (ingreso_usuario == "8") {
-            cout << "8";
             string ruta_ejemplo = "datos.csv";
             guardar_pacientes_en_csv(head, ruta_ejemplo);
         }
 
         if (ingreso_usuario == "salir") {
-            cout << "salido";
+            cout << "\n A Salido Correctamente del Programa";
         }
             
     }
