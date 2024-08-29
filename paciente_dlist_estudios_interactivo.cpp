@@ -14,10 +14,15 @@ using namespace std;
 
 int main()
 {
-    char ingreso_usuario;
+    string ingreso_usuario;
+    ingreso_usuario = "hola mundo";
 
-    cout << "Hello, World!\n\n1~ Agregar Paciente\n2~ Eliminar Paciente\n3~ Imprimir Pacientes Actuales\n4~ Imprimir promedio de Edad\n4~ Imprimir promedio de Peso\n6~ Imprimir IMC pacientes\n\n~~";
-    cin >> ingreso_usuario;
+    while (ingreso_usuario != "salir")
+    {
+        cout << "Hello, World!\n\n1~ Agregar Paciente\n2~ Eliminar Paciente\n3~ Imprimir Pacientes Actuales\n4~ Imprimir promedio de Edad\n4~ Imprimir promedio de Peso\n6~ Imprimir IMC pacientes\nsalir~ cerrar el programa\n\n~~";
+        cin >> ingreso_usuario;
 
-    cout << "\n\n\n~~" << ingreso_usuario;
+        cout << "\n\n\n~~" << ingreso_usuario;
+    }
+    
 }
