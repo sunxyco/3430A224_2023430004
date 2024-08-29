@@ -1,53 +1,43 @@
-/*Escriba programa en C++ que permita almacenar la información de pacientes en
-una estructura para trabajar con una lista dinámica. Aquí no se puede utilizar la librería
-list y debe realizar la actualización de la estructura, la inclusión de las funciones para
-agregar, imprimir y eliminar. Dentro de la función main debe incorporar los ejemplos de
-pacientes y dejar en evidencia todas las funciones desarrolladas*/
-
-/*Escriba un programa en C++ que permita almacenar la información de los pacientes
-(estructura) en un arreglo. Dentro de la función main debe incorporar los ejemplos de
-“pacientes” utilizados anteriormente, almacenarlos en el arreglo y entregar la
-información de cada uno de ellos por la salida estándar.*/
-
-
 #include <iostream>
 using namespace std;
 
-//la estructura de tipo paciente
+//la estructura de tipo paciente actualizada para ser compatible con la lista dinamica
 struct Paciente
 {
     string nombre;
+    int peso;
     int edad;
     double altura;
 
     Paciente* siguiente;
 };
 
-//se agrega cada nuevo paciente y se genera una conexion entra cada uno 
-void agregar_persona(Paciente*& head, const string& nombre, int edad, double altura)
+//funcion para agregar personas
+void agregar_persona(Paciente*& head, const string& nombre,int peso, int edad, double altura)
 {
     Paciente* nuevoPaciente = new Paciente();
     nuevoPaciente->nombre = nombre;
+    nuevoPaciente->peso = peso;
     nuevoPaciente->edad = edad;
     nuevoPaciente->siguiente = head;
     nuevoPaciente->altura = altura;
     head = nuevoPaciente;
 }
 
-
-
+//funcion imprimir a todos los pacientes actuales
 void imprimir_personas(const Paciente* head)
 {
 
     const Paciente* actual = head;
     int i = 1;
     while (actual != nullptr) {
-        cout << "Paciente " << i << " nombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << "\n";
+        cout << "Paciente " << i << " Nombre: " << actual->nombre << " Peso: " << actual->peso << "kg Edad: " << actual->edad << " Altura: " << actual->altura << "m\n";
         actual = actual->siguiente;
         i = i + 1;
     }
 }
 
+//funcion eliminar personas
 void eliminarPaciente(Paciente*& head, const string& nombre) {
     Paciente* actual = head;
     Paciente* previous = nullptr;
@@ -74,17 +64,16 @@ int main ()
     Paciente* head = nullptr;
 
     //se agregan las personas a la lista
-    agregar_persona(head, "Martin", 11, 1.50);
-    agregar_persona(head, "Carlota", 23, 1.70);
-    agregar_persona(head, "Gonzalo", 45, 1.90);
-    agregar_persona(head, "Daniel", 19, 1.79);
+    agregar_persona(head, "Martin", 45, 11, 1.50);
+    agregar_persona(head, "Carlota", 65, 23, 1.70);
+    agregar_persona(head, "Gonzalo", 140, 45, 1.90);
+    agregar_persona(head, "Daniel", 79, 19, 1.79);
 
     cout << "Pacientes actuales \n\n";
     imprimir_personas(head);
 
     //eliminar paciente
     eliminarPaciente(head, "Gonzalo");
-
 
     cout << "\nSe elimino a Gonzalo ~ Nueva lista\n\n";
     //se imprime la lsita actual con un paciente eliminado

@@ -11,7 +11,6 @@ struct Paciente
 };
 
 int main () {
-
     //se crea un arreglo de 3 instancias de tipo Paciente
     Paciente mis_pacientes[3];
 
