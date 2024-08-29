@@ -122,7 +122,7 @@ void imprimir_pacientes(const Paciente* head)
     const Paciente* actual = head;
     int i = 1;
     while (actual != nullptr) {
-        cout << "Paciente " << i << " nombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << "m peso: " << actual->peso << "\n";
+        cout << "Paciente " << i << " nombre: " << actual->nombre << " edad: " << actual->edad << " altura: " << actual->altura << "m peso: " << actual->peso << "kg\n";
 
         actual = actual->siguiente;
         i++;
@@ -151,10 +151,10 @@ void eliminarPaciente(Paciente*& head, const string& nombre) {
 void imprimir_datos(Paciente*& head)
 {
     double promedio_edades = calcular_promedio_edad(head);
-    cout << "El promedio de edades es: " << promedio_edades << "\n";
+    cout << "El promedio de edades es: " << promedio_edades << " años\n";
 
     double promedio_peso = calcular_promedio_peso(head);
-    cout << "El promedio de Peso es: " << promedio_peso << "\n\n";
+    cout << "El promedio de Peso es: " << promedio_peso << "kg\n\n";
 
     imprimir_imc_pacientes(head);
 }
