@@ -115,10 +115,9 @@ void imprimir_imc_pacientes(const Paciente* head)
 
         actual = actual -> siguiente;
     }
-    
 }
 
-void imprimir_personas(const Paciente* head)
+void imprimir_pacientes(const Paciente* head)
 {
     const Paciente* actual = head;
     int i = 1;
@@ -175,7 +174,7 @@ int main ()
     agregar_persona(head, "Marcelo", 64, 1.87, 90);
 
     cout << "Pacientes actuales \n\n";
-    imprimir_personas(head);
+    imprimir_pacientes(head);
     cout << "\nDatos de los pacientes:\n\n";
     imprimir_datos(head);
 
@@ -184,7 +183,7 @@ int main ()
 
     cout << "\n~~~~ Se elimino a Gonzalo ~ Nueva lista ~~~~\n\n";
     //se imprime la lsita actual con un paciente eliminado
-    imprimir_personas(head);
+    imprimir_pacientes(head);
     cout << "\nDatos de los pacientes:\n\n";
     imprimir_datos(head);
 
