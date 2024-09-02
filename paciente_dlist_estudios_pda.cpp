@@ -113,7 +113,7 @@ int main()
 
     while (ingreso_usuario != "salir")
     {
-        cout << "Opciones de Ingreso:\n\n1~ Sobre IMC\n2~ Sobre AC1\nsalir~ salir del programa\n\n>";
+        cout << "Opciones de Ingreso:\n\n1~ Sobre IMC\n2~ Sobre AC1\n3~ Generar lista de prioridad\nsalir~ salir del programa\n\n>";
         cin >> ingreso_usuario;
 
         /*
@@ -126,23 +126,30 @@ int main()
                 2.1 imprimir normal
                 2.2 imprimir prediabetes
                 2.3 imprimir diabetes
+        3~ Generar lista de prioridad
         "salir"~ cerrar el programa*/
 
         //sobre IMC
         if (ingreso_usuario == "1") {
             cout << "   1~ imprimir bajopeso\n   2~ imprimir peso normal\n   3~ imprimir sobrepeso\n   4~ imprimir obesidad\n\n>";
             cin >> ingreso_usuario;
+
+            // IMC -> bajo peso: x < 18.5; peso normal: 18.5 <= x < 25; sobrepeso: 25 <= x < 30; obesidad: x >= 30
             if (ingreso_usuario == "1"){
-                cout << "\n\nSe imprimiran a los de bajo peso\n\n";
+                cout << "\n\nSe imprimirán a los de bajo peso\n\n";
+                // Rango de IMC: (0, 18.5)
             }
             if (ingreso_usuario == "2"){
-                cout << "\n\nSe imprimiran a los de peso normal\n\n";
+                cout << "\n\nSe imprimirán a los de peso normal\n\n";
+                // Rango de IMC: [18.5, 24.9]
             }
             if (ingreso_usuario == "3"){
-                cout << "\n\nSe imprimiran a los de sobrepeso\n\n";
+                cout << "\n\nSe imprimirán a los de sobrepeso\n\n";
+                // Rango de IMC: [25, 29.9]
             }
             if (ingreso_usuario == "4"){
-                cout << "\n\nSe imprimiran a los de obesidad\n\n";
+                cout << "\n\nSe imprimirán a los de obesidad\n\n";
+                // Rango de IMC: [30, 100] (o un valor alto según tu criterio)
             }
         }
         
@@ -150,19 +157,27 @@ int main()
         if (ingreso_usuario == "2") {
             cout << "   1~ imprimir normal\n   2~ imprimir prediabetes\n   3~ imprimir Diabetes\n\n>";
             cin >> ingreso_usuario;
+            //AC1 -> nomral 5,7 > x; prediabetes 5,7 <= x <= 6,5 ; diabetes 6,5 < x;
             if (ingreso_usuario == "1"){
                 cout << "\n\nSe imprimiran a los de AC1 Normal\n\n";
+                //(0,5.7)
             }
             if (ingreso_usuario == "2"){
                 cout << "\n\nSe imprimiran a los de AC1 Prediabetes\n\n";
+                //(5.7,6.5)
             }
             if (ingreso_usuario == "3"){
                 cout << "\n\nSe imprimiran a los de AC1 Diabetes\n\n";
+                //(6.5,10)
             }
         }
 
+        if (ingreso_usuario == "3") {
+            cout << "\n\n~Generando lista de prioridad de pacientes~\n\n";
+        }
+
         if (ingreso_usuario == "salir") {
-            cout << "\n A Salido Correctamente del Programa :)";
+            cout << "\n\n A Salido Correctamente del Programa :)";
         }
             
     }
