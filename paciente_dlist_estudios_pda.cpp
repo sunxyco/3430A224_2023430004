@@ -103,8 +103,67 @@ int main()
     //puntero principal
     Paciente* head = nullptr;
 
+    string ingreso_usuario;
+    ingreso_usuario = "hola mundo";
+
     string ruta_ejemplo = "patient_list.csv";
     cout << "Nuevos Pacientes Cargados desde CSV\n\n";
     cargar_pacientes_desde_csv(head, ruta_ejemplo);
     imprimir_pacientes(head);
+
+    while (ingreso_usuario != "salir")
+    {
+        cout << "Opciones de Ingreso:\n\n1~ Sobre IMC\n2~ Sobre AC1\nsalir~ salir del programa\n\n>";
+        cin >> ingreso_usuario;
+
+        /*
+        1~ Sobre IMC
+                1.1 Imprimir bajopeso
+                1.2 imprimir peso normal
+                1.3 Imprimir sobrepeso
+                1.4 imprimir obesidad
+        2~ Sobre AC1
+                2.1 imprimir normal
+                2.2 imprimir prediabetes
+                2.3 imprimir diabetes
+        "salir"~ cerrar el programa*/
+
+        //sobre IMC
+        if (ingreso_usuario == "1") {
+            cout << "   1~ imprimir bajopeso\n   2~ imprimir peso normal\n   3~ imprimir sobrepeso\n   4~ imprimir obesidad\n\n>";
+            cin >> ingreso_usuario;
+            if (ingreso_usuario == "1"){
+                cout << "\n\nSe imprimiran a los de bajo peso\n\n";
+            }
+            if (ingreso_usuario == "2"){
+                cout << "\n\nSe imprimiran a los de peso normal\n\n";
+            }
+            if (ingreso_usuario == "3"){
+                cout << "\n\nSe imprimiran a los de sobrepeso\n\n";
+            }
+            if (ingreso_usuario == "4"){
+                cout << "\n\nSe imprimiran a los de obesidad\n\n";
+            }
+        }
+        
+        //sobre A1C
+        if (ingreso_usuario == "2") {
+            cout << "   1~ imprimir normal\n   2~ imprimir prediabetes\n   3~ imprimir Diabetes\n\n>";
+            cin >> ingreso_usuario;
+            if (ingreso_usuario == "1"){
+                cout << "\n\nSe imprimiran a los de AC1 Normal\n\n";
+            }
+            if (ingreso_usuario == "2"){
+                cout << "\n\nSe imprimiran a los de AC1 Prediabetes\n\n";
+            }
+            if (ingreso_usuario == "3"){
+                cout << "\n\nSe imprimiran a los de AC1 Diabetes\n\n";
+            }
+        }
+
+        if (ingreso_usuario == "salir") {
+            cout << "\n A Salido Correctamente del Programa :)";
+        }
+            
+    }
 }
