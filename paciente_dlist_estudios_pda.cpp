@@ -98,6 +98,32 @@ void cargar_pacientes_desde_csv(Paciente*& head, const std::string& ruta)
     cout << "\n\n";
 }
 
+void imprimir_pacientes_imc(double rango_minimo, double rango_maximo, const Paciente* head, string mensaje){
+    const Paciente* actual = head;
+    int i = 0;
+    while (actual != nullptr) {
+        if (actual->imc >= rango_minimo && actual->imc < rango_maximo){
+            cout << "Paciente " << i << "\nNombre: " << actual->nombre << " Edad: " << actual->edad << " Altura: " << actual->altura << "m Peso: " << actual->peso << "kg IMC: " << actual->imc <<" Ac1: " << actual->ac1 << "\n";
+            i++;
+        }
+        actual = actual->siguiente;
+    }
+    cout << "\n\n Pacientes Totales con " << mensaje << " ~ " << i << " Pacientes";
+}
+
+void imprimir_pacientes_AC1(double rango_minimo, double rango_maximo, const Paciente* head, string mensaje){
+    const Paciente* actual = head;
+    int i = 0;
+    while (actual != nullptr) {
+        if (actual->ac1 >= rango_minimo && actual->ac1 < rango_maximo){
+            cout << "Paciente " << i << "\nNombre: " << actual->nombre << " Edad: " << actual->edad << " Altura: " << actual->altura << "m Peso: " << actual->peso << "kg IMC: " << actual->imc <<" Ac1: " << actual->ac1 << "\n";
+            i++;
+        }
+        actual = actual->siguiente;
+    }
+    cout << "\n\n Pacientes Totales con " << mensaje << " ~ " << i << " Pacientes";
+}
+
 int main()
 {
     //puntero principal
@@ -105,6 +131,9 @@ int main()
 
     string ingreso_usuario;
     ingreso_usuario = "hola mundo";
+
+    string ingreso_usuario_secundario;
+    ingreso_usuario_secundario = "mundo hola";
 
     string ruta_ejemplo = "patient_list.csv";
     cout << "Nuevos Pacientes Cargados desde CSV\n\n";
@@ -115,7 +144,6 @@ int main()
     {
         cout << "Opciones de Ingreso:\n\n1~ Sobre IMC\n2~ Sobre AC1\n3~ Generar lista de prioridad\nsalir~ salir del programa\n\n>";
         cin >> ingreso_usuario;
-
         /*
         1~ Sobre IMC
                 1.1 Imprimir bajopeso
@@ -132,43 +160,50 @@ int main()
         //sobre IMC
         if (ingreso_usuario == "1") {
             cout << "   1~ imprimir bajopeso\n   2~ imprimir peso normal\n   3~ imprimir sobrepeso\n   4~ imprimir obesidad\n\n>";
-            cin >> ingreso_usuario;
+            cin >> ingreso_usuario_secundario;
 
             // IMC -> bajo peso: x < 18.5; peso normal: 18.5 <= x < 25; sobrepeso: 25 <= x < 30; obesidad: x >= 30
-            if (ingreso_usuario == "1"){
+            if (ingreso_usuario_secundario == "1"){
                 cout << "\n\nSe imprimirán a los de bajo peso\n\n";
                 // Rango de IMC: (0, 18.5)
+                imprimir_pacientes_imc(0, 18.5, head, "Bajo Peso");
             }
-            if (ingreso_usuario == "2"){
+            if (ingreso_usuario_secundario == "2"){
                 cout << "\n\nSe imprimirán a los de peso normal\n\n";
                 // Rango de IMC: [18.5, 24.9]
+                imprimir_pacientes_imc(18.5, 25.0, head, "Peso Normal");
             }
-            if (ingreso_usuario == "3"){
+            if (ingreso_usuario_secundario == "3"){
                 cout << "\n\nSe imprimirán a los de sobrepeso\n\n";
                 // Rango de IMC: [25, 29.9]
+                imprimir_pacientes_imc(25.0, 30.0, head, "SobrePeso");
             }
-            if (ingreso_usuario == "4"){
+            if (ingreso_usuario_secundario == "4"){
                 cout << "\n\nSe imprimirán a los de obesidad\n\n";
                 // Rango de IMC: [30, 100] (o un valor alto según tu criterio)
+                imprimir_pacientes_imc(30.0, 100, head, "Obesidad");
             }
         }
         
         //sobre A1C
         if (ingreso_usuario == "2") {
             cout << "   1~ imprimir normal\n   2~ imprimir prediabetes\n   3~ imprimir Diabetes\n\n>";
-            cin >> ingreso_usuario;
+            cin >> ingreso_usuario_secundario;
             //AC1 -> nomral 5,7 > x; prediabetes 5,7 <= x <= 6,5 ; diabetes 6,5 < x;
-            if (ingreso_usuario == "1"){
+            if (ingreso_usuario_secundario == "1"){
                 cout << "\n\nSe imprimiran a los de AC1 Normal\n\n";
                 //(0,5.7)
+                imprimir_pacientes_AC1(0.0, 5.7, head, "Normal");
             }
-            if (ingreso_usuario == "2"){
+            if (ingreso_usuario_secundario == "2"){
                 cout << "\n\nSe imprimiran a los de AC1 Prediabetes\n\n";
                 //(5.7,6.5)
+                imprimir_pacientes_AC1(5.7, 6.5, head, "Prediabetes");
             }
-            if (ingreso_usuario == "3"){
+            if (ingreso_usuario_secundario == "3"){
                 cout << "\n\nSe imprimiran a los de AC1 Diabetes\n\n";
                 //(6.5,10)
+                imprimir_pacientes_AC1(6.5, 10, head, "Diabetes");
             }
         }
 
