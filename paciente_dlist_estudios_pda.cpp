@@ -26,9 +26,53 @@ struct Paciente
     double imc;
     double ac1;
     double puntaje_prioridad;
+    Paciente* sig_diab;
 
     Paciente* siguiente;
 };
+
+
+// Variable global para la cabeza de la lista de prioridades de diabéticos
+Paciente* cabeza_prioridad = nullptr;
+
+// Función para insertar un paciente en la lista ordenada por puntaje de prioridad
+void insertarOrdenado(Paciente* diabetin) {
+    if (cabeza_prioridad == nullptr || diabetin->puntaje_prioridad > cabeza_prioridad->puntaje_prioridad) {
+        diabetin->sig_diab = cabeza_prioridad; // Conectar con el siguiente en la lista ordenada
+        cabeza_prioridad = diabetin; // Insertar diabetin en la cabeza de la lista ordenada
+    } else {
+        Paciente* actual = cabeza_prioridad;
+        while (actual->sig_diab != nullptr && actual->sig_diab->puntaje_prioridad >= diabetin->puntaje_prioridad) {
+            actual = actual->sig_diab;
+        }
+        diabetin->sig_diab = actual->sig_diab; // Conectar con el siguiente en la lista ordenada
+        actual->sig_diab = diabetin; // Insertar diabetin en la lista ordenada
+    }
+}
+
+// Función para generar la lista de prioridad de diabéticos
+void generar_lista_prioridad(Paciente* head) {
+    // Recorrer todos los pacientes y añadirlos a la lista de prioridades
+    Paciente* actual = head;
+
+    while (actual != nullptr) {
+        if (actual->puntaje_prioridad > 0) {
+            // Insertar paciente en la lista de prioridades
+            insertarOrdenado(actual);
+        }
+        actual = actual->siguiente;
+    }
+
+    // Imprimir la lista de prioridades
+    Paciente* temp = cabeza_prioridad;
+
+    cout << "\n\nLISTA DE PRIORIDAD DE PACIENTES DIABETICOS\n\n";
+
+    while (temp != nullptr) {
+        cout << "Nombre: " << temp->nombre << "Edad: " << temp->edad << " imc: " << temp->imc << " Paciente con Ac1: " << temp->ac1 << " y Puntaje de Prioridad: " << temp->puntaje_prioridad << "\n";
+        temp = temp->sig_diab;
+    }
+}
 
 double calcular_puntaje_prioridad(int edad, double imc, double ac1){
     
@@ -47,11 +91,14 @@ double calcular_puntaje_prioridad(int edad, double imc, double ac1){
     if (imc > 30){
         factor_riesgo = 2;
     }
-    if (ac1>180){
-        factor_riesgo = 5;
+    if (ac1 > 5.7){
+        factor_riesgo = 3;
+    }
+    if (ac1 > 6.5){
+        factor_riesgo = 4;
     }
 
-    double puntaje_prioridad = (0.5*edad)+(0.3*imc)+(0.7*ac1)+(10*factor_riesgo);
+    double puntaje_prioridad = (0.5*edad)+(1.0*imc)+(1.5*ac1)+(10*factor_riesgo);
 
     return puntaje_prioridad;
 }
@@ -152,14 +199,6 @@ void imprimir_pacientes_AC1(double rango_minimo, double rango_maximo, const Paci
     cout << "\n\n Pacientes Totales con " << mensaje << " ~ " << i << " Pacientes";
 }
 
-void generar_lista_prioridad(const Paciente* head){
-    //se van a recorrer a todos los pacientes y se generara una cola donde el primero sera el paciente con mas prioridad
-
-    //calcular porcentaje de prioridad de todos los pacientes y almacenarlo en su atributo || hacer la cola y despues orrdenarla
-
-    //persona1 -> calcular prioridad -> almecenarlo en la structura -> recorrer personas y segun los valores de prioridad encolarllos
-}
-
 int main()
 {
     //puntero principal
@@ -247,6 +286,8 @@ int main()
             cout << "\n\n~Generando lista de prioridad de pacientes~\n\n";
             //leer todos los pacientes y generar la lista
             generar_lista_prioridad(head);
+
+            //imprimir_lista_prioridad(head);
         }
 
         if (ingreso_usuario == "salir") {
