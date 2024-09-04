@@ -25,9 +25,36 @@ struct Paciente
     int peso;
     double imc;
     double ac1;
+    double puntaje_prioridad;
 
     Paciente* siguiente;
 };
+
+double calcular_puntaje_prioridad(int edad, double imc, double ac1){
+    
+    //factor de riesgo FR= 3,2,1,0; ac1> 180, imc > 30 (obesidad), imc > 18.5 (bajo peso), todos los datos normales
+    if (ac1 < 5.7 && imc >= 18.5 && imc < 25.0){
+        //la persona no tiene prioridad
+        return 0;
+    }
+
+    int factor_riesgo = 0;
+    //factor de riesgo FR= 3,2,1,0; ac1> 180, imc > 30 (obesidad), imc > 18.5 (bajo peso), todos los datos normales
+
+    if (imc > 18.5){
+        factor_riesgo = 1;
+    }
+    if (imc > 30){
+        factor_riesgo = 2;
+    }
+    if (ac1>180){
+        factor_riesgo = 5;
+    }
+
+    double puntaje_prioridad = (0.5*edad)+(0.3*imc)+(0.7*ac1)+(10*factor_riesgo);
+
+    return puntaje_prioridad;
+}
 
 //se agrega cada nuevo paciente y se genera una conexion entra cada uno 
 void agregar_persona(Paciente*& head, const string& nombre, int edad, double altura, int peso, double ac1)
@@ -40,6 +67,7 @@ void agregar_persona(Paciente*& head, const string& nombre, int edad, double alt
     nuevoPaciente->peso = peso;
     nuevoPaciente->imc = (peso / (altura * altura));
     nuevoPaciente->ac1 = ac1;
+    nuevoPaciente->puntaje_prioridad = calcular_puntaje_prioridad(edad, (peso / (altura * altura)), ac1);
     head = nuevoPaciente;
 }
 
@@ -48,7 +76,7 @@ void imprimir_pacientes(const Paciente* head)
     const Paciente* actual = head;
     int i = 1;
     while (actual != nullptr) {
-        cout << "Paciente " << i << "\nNombre: " << actual->nombre << " Edad: " << actual->edad << " Altura: " << actual->altura << "m Peso: " << actual->peso << "kg IMC: " << actual->imc <<" Ac1: " << actual->ac1 << "\n";
+        cout << "Paciente " << i << "\nNombre: " << actual->nombre << " Edad: " << actual->edad << " Altura: " << actual->altura << "m Peso: " << actual->peso << "kg IMC: " << actual->imc <<" Ac1: " << actual->ac1 << " Puntaje Prioridad: " << actual->puntaje_prioridad << "\n";
         actual = actual->siguiente;
         i++;
     }
@@ -122,6 +150,14 @@ void imprimir_pacientes_AC1(double rango_minimo, double rango_maximo, const Paci
         actual = actual->siguiente;
     }
     cout << "\n\n Pacientes Totales con " << mensaje << " ~ " << i << " Pacientes";
+}
+
+void generar_lista_prioridad(const Paciente* head){
+    //se van a recorrer a todos los pacientes y se generara una cola donde el primero sera el paciente con mas prioridad
+
+    //calcular porcentaje de prioridad de todos los pacientes y almacenarlo en su atributo || hacer la cola y despues orrdenarla
+
+    //persona1 -> calcular prioridad -> almecenarlo en la structura -> recorrer personas y segun los valores de prioridad encolarllos
 }
 
 int main()
@@ -209,6 +245,8 @@ int main()
 
         if (ingreso_usuario == "3") {
             cout << "\n\n~Generando lista de prioridad de pacientes~\n\n";
+            //leer todos los pacientes y generar la lista
+            generar_lista_prioridad(head);
         }
 
         if (ingreso_usuario == "salir") {
