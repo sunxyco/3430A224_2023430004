@@ -63,11 +63,21 @@ void generar_lista_prioridad(Paciente* head) {
         actual = actual->siguiente;
     }
 
+    /*
     // Imprimir la lista de prioridades
     Paciente* temp = cabeza_prioridad;
 
     cout << "\n\nLISTA DE PRIORIDAD DE PACIENTES DIABETICOS\n\n";
 
+    while (temp != nullptr) {
+        cout << "Nombre: " << temp->nombre << "Edad: " << temp->edad << " imc: " << temp->imc << " Paciente con Ac1: " << temp->ac1 << " y Puntaje de Prioridad: " << temp->puntaje_prioridad << "\n";
+        temp = temp->sig_diab;
+    }*/
+}
+
+// Imprimir a la gente de la cola de atencion diabetica
+void printColaDiabetin(const Paciente* head) {
+    const Paciente* temp = head;
     while (temp != nullptr) {
         cout << "Nombre: " << temp->nombre << "Edad: " << temp->edad << " imc: " << temp->imc << " Paciente con Ac1: " << temp->ac1 << " y Puntaje de Prioridad: " << temp->puntaje_prioridad << "\n";
         temp = temp->sig_diab;
@@ -288,6 +298,10 @@ int main()
             generar_lista_prioridad(head);
 
             //imprimir_lista_prioridad(head);
+
+            printColaDiabetin(cabeza_prioridad);
+
+            cout << "\n\n"
         }
 
         if (ingreso_usuario == "salir") {
