@@ -1,22 +1,10 @@
-//se va a leer datos de csv -> Name,Age,Height (m),Weight (kg),AC1
-
-//->puntaje de prioridad -> edad, imc, AC1
-
-//pila->pacientes / cola->lista de atencion
-
-//actualizar estructura para almacenar IMC ~ AC1
-//cargar csv
-//buscar IMC ~ AC1
-//puntaje prioridad
-
-//AC1 -> nomral 5,7 > x; prediabetes 5,7 <= x <= 6,5 ; diabetes 6,5 < x;
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 using namespace std;
 
+//estructura paciente, el atributo sig_diab solo se usara para generar conexiones entre pacientes diabeticos prioritarios
 struct Paciente
 {
     string nombre;
@@ -35,6 +23,70 @@ struct Paciente
 // Variable global para la cabeza de la lista de prioridades de diabéticos
 Paciente* cabeza_prioridad = nullptr;
 
+//se cuentan a las personas actuales en la lista de espera de atencion diabetica
+void contarPacientes(const Paciente* punto_inicio_lista_diabeticos) {
+
+    if (punto_inicio_lista_diabeticos == nullptr) {
+        cout << "\n\nNo hay pacientes en la lista de espera\n\n";
+    }
+
+    const Paciente* contador = punto_inicio_lista_diabeticos;
+
+    int i = 0;
+    while (contador != nullptr) {
+        i = i + 1;
+        contador = contador->sig_diab;
+    }
+
+    cout << "\n\nActualmente hay " << i << " Pacientes en la lista de espera\n\n";
+}
+
+// Imprimir a la gente de la cola de atencion diabetica
+void printColaDiabetin(const Paciente* head) {
+    const Paciente* temp = head;
+
+    if (temp == nullptr) {
+        cout << "\n\nNo hay pacientes actualmentes en la Cola de Atencion de Personas Diabeticas";
+        return;
+    }
+
+    while (temp != nullptr) {
+        cout << "Nombre: " << temp->nombre << "Edad: " << temp->edad << " imc: " << temp->imc << " Paciente con Ac1: " << temp->ac1 << " y Puntaje de Prioridad: " << temp->puntaje_prioridad << "\n";
+        temp = temp->sig_diab;
+    }
+
+    cout << "\n\n>Cola de Atencion Impresa Correctamente\n\n";
+}
+
+// Funcion para desencolar pacientes
+void desencolarPaciente(int pacientes_atendidos, Paciente*& punto_inicio_lista_diabeticos) {
+
+    if(punto_inicio_lista_diabeticos == nullptr) {
+        return;
+    }
+
+    for (int i = 0; i < pacientes_atendidos && punto_inicio_lista_diabeticos != nullptr; ++i) {
+        Paciente* temporal = punto_inicio_lista_diabeticos;  // Guardamos el nodo actual
+        punto_inicio_lista_diabeticos = punto_inicio_lista_diabeticos->sig_diab;  // Avanzamos al siguiente
+        delete temporal;  // Eliminamos el nodo anterior
+    }
+
+    cout << "\n\n>A la cola se le desencolarón " << pacientes_atendidos << " Pacientes Diabeticos\n\n";
+    //printColaDiabetin(punto_inicio_lista_diabeticos);
+}
+
+// Funcion vaciar cola
+void vaciarListaPrioridad(Paciente* inicio_lista_prioridad) {
+
+    while (inicio_lista_prioridad != nullptr) {
+        desencolarPaciente(1, inicio_lista_prioridad);
+    }
+
+    //printColaDiabetin(inicio_lista_prioridad);
+
+    cout << "\n\n¡Cola de atencion Vaciada Con Exito!\n\n";
+}
+
 // Función para insertar un paciente en la lista ordenada por puntaje de prioridad
 void insertarOrdenado(Paciente* diabetin) {
     if (cabeza_prioridad == nullptr || diabetin->puntaje_prioridad > cabeza_prioridad->puntaje_prioridad) {
@@ -50,7 +102,7 @@ void insertarOrdenado(Paciente* diabetin) {
     }
 }
 
-// Función para generar la lista de prioridad de diabéticos
+// Función para generar la lista de prioridad de diabéticos ~ solo se agregan a la cola los pacientes que tenga un nivel alto de AC1
 void generar_lista_prioridad(Paciente* head) {
     // Recorrer todos los pacientes y añadirlos a la lista de prioridades
     Paciente* actual = head;
@@ -63,30 +115,13 @@ void generar_lista_prioridad(Paciente* head) {
         actual = actual->siguiente;
     }
 
-    /*
-    // Imprimir la lista de prioridades
-    Paciente* temp = cabeza_prioridad;
-
-    cout << "\n\nLISTA DE PRIORIDAD DE PACIENTES DIABETICOS\n\n";
-
-    while (temp != nullptr) {
-        cout << "Nombre: " << temp->nombre << "Edad: " << temp->edad << " imc: " << temp->imc << " Paciente con Ac1: " << temp->ac1 << " y Puntaje de Prioridad: " << temp->puntaje_prioridad << "\n";
-        temp = temp->sig_diab;
-    }*/
+    cout << "\n\n~Cola de pacientes Diabeticos Generada con Exito~\n\n";
 }
 
-// Imprimir a la gente de la cola de atencion diabetica
-void printColaDiabetin(const Paciente* head) {
-    const Paciente* temp = head;
-    while (temp != nullptr) {
-        cout << "Nombre: " << temp->nombre << "Edad: " << temp->edad << " imc: " << temp->imc << " Paciente con Ac1: " << temp->ac1 << " y Puntaje de Prioridad: " << temp->puntaje_prioridad << "\n";
-        temp = temp->sig_diab;
-    }
-}
-
+//para calcular el puntade de prioridad
 double calcular_puntaje_prioridad(int edad, double imc, double ac1){
     
-    //factor de riesgo FR= 3,2,1,0; ac1> 180, imc > 30 (obesidad), imc > 18.5 (bajo peso), todos los datos normales
+    //si la persona tiene un buen imc y un nivel adecuado de AC1 este no tiene prioridad
     if (ac1 < 5.7 && imc >= 18.5 && imc < 25.0){
         //la persona no tiene prioridad
         return 0;
@@ -128,6 +163,7 @@ void agregar_persona(Paciente*& head, const string& nombre, int edad, double alt
     head = nuevoPaciente;
 }
 
+//se imprimen a todos los pacinetes actuales
 void imprimir_pacientes(const Paciente* head)
 {
     const Paciente* actual = head;
@@ -140,6 +176,7 @@ void imprimir_pacientes(const Paciente* head)
     cout << "\n\n";
 }
 
+//Apenas arranca el programa este carga a los pacientes desde el csv
 void cargar_pacientes_desde_csv(Paciente*& head, const std::string& ruta)
 {
     ifstream archivo(ruta);
@@ -180,9 +217,10 @@ void cargar_pacientes_desde_csv(Paciente*& head, const std::string& ruta)
 
     archivo.close();
 
-    cout << "\n\n";
+    cout << "\n\nPacientes Cargados Exitosamente desde CSV\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
 }
 
+//se imprime a los pacientes segun el rango de su IMC
 void imprimir_pacientes_imc(double rango_minimo, double rango_maximo, const Paciente* head, string mensaje){
     const Paciente* actual = head;
     int i = 0;
@@ -196,6 +234,7 @@ void imprimir_pacientes_imc(double rango_minimo, double rango_maximo, const Paci
     cout << "\n\n Pacientes Totales con " << mensaje << " ~ " << i << " Pacientes";
 }
 
+//se imprime a los pacientes segun el rango de su AC1
 void imprimir_pacientes_AC1(double rango_minimo, double rango_maximo, const Paciente* head, string mensaje){
     const Paciente* actual = head;
     int i = 0;
@@ -220,16 +259,19 @@ int main()
     string ingreso_usuario_secundario;
     ingreso_usuario_secundario = "mundo hola";
 
+    string ingreso_terciario;
+    ingreso_terciario = "oal undo";
+
     string ruta_ejemplo = "patient_list.csv";
-    cout << "Nuevos Pacientes Cargados desde CSV\n\n";
+    cout << "Cargando pacientes desde CSV\n";
     cargar_pacientes_desde_csv(head, ruta_ejemplo);
-    imprimir_pacientes(head);
 
     while (ingreso_usuario != "salir")
     {
-        cout << "Opciones de Ingreso:\n\n1~ Sobre IMC\n2~ Sobre AC1\n3~ Generar lista de prioridad\nsalir~ salir del programa\n\n>";
+        cout << "Opciones de Ingreso:\n\n0~ Imprimir Todos los Pacientes Actuales\n1~ Sobre IMC\n2~ Sobre AC1\n3~ Sobre Pacientes Diabeticos\nsalir~ salir del programa\n\n>";
         cin >> ingreso_usuario;
-        /*
+        /* boseto del menú
+        0~ Imprimir todos los pacientes actuales
         1~ Sobre IMC
                 1.1 Imprimir bajopeso
                 1.2 imprimir peso normal
@@ -239,38 +281,44 @@ int main()
                 2.1 imprimir normal
                 2.2 imprimir prediabetes
                 2.3 imprimir diabetes
-        3~ Generar lista de prioridad
+        3~ Sobre Pacientes Diabeticos
+                3.1 Generar lista de prioridad
+                3.2 Imprimir lista de prioridad actual
+                3.3 Desencolar pacientes que ya fueron atendidos
+                3.4 Vaciar lista de espera
+                3.5 Contar personas en la lista de espera
+
         "salir"~ cerrar el programa*/
 
-        //sobre IMC
+        if (ingreso_usuario == "0") {
+            cout << "\nImprimiendo Pacientes\n";
+            imprimir_pacientes(head);
+        }
+
+        //sobre IMC ~ se imprime a los pacientes segun su IMC
         if (ingreso_usuario == "1") {
             cout << "   1~ imprimir bajopeso\n   2~ imprimir peso normal\n   3~ imprimir sobrepeso\n   4~ imprimir obesidad\n\n>";
             cin >> ingreso_usuario_secundario;
-
             // IMC -> bajo peso: x < 18.5; peso normal: 18.5 <= x < 25; sobrepeso: 25 <= x < 30; obesidad: x >= 30
             if (ingreso_usuario_secundario == "1"){
                 cout << "\n\nSe imprimirán a los de bajo peso\n\n";
                 // Rango de IMC: (0, 18.5)
-                imprimir_pacientes_imc(0, 18.5, head, "Bajo Peso");
-            }
+                imprimir_pacientes_imc(0, 18.5, head, "Bajo Peso");}
             if (ingreso_usuario_secundario == "2"){
                 cout << "\n\nSe imprimirán a los de peso normal\n\n";
                 // Rango de IMC: [18.5, 24.9]
-                imprimir_pacientes_imc(18.5, 25.0, head, "Peso Normal");
-            }
+                imprimir_pacientes_imc(18.5, 25.0, head, "Peso Normal");}
             if (ingreso_usuario_secundario == "3"){
                 cout << "\n\nSe imprimirán a los de sobrepeso\n\n";
                 // Rango de IMC: [25, 29.9]
-                imprimir_pacientes_imc(25.0, 30.0, head, "SobrePeso");
-            }
+                imprimir_pacientes_imc(25.0, 30.0, head, "SobrePeso");}
             if (ingreso_usuario_secundario == "4"){
                 cout << "\n\nSe imprimirán a los de obesidad\n\n";
                 // Rango de IMC: [30, 100] (o un valor alto según tu criterio)
-                imprimir_pacientes_imc(30.0, 100, head, "Obesidad");
-            }
+                imprimir_pacientes_imc(30.0, 100, head, "Obesidad");}
         }
         
-        //sobre A1C
+        //sobre A1C ~ se imprime el los pacienetes segun el rango de su AC1
         if (ingreso_usuario == "2") {
             cout << "   1~ imprimir normal\n   2~ imprimir prediabetes\n   3~ imprimir Diabetes\n\n>";
             cin >> ingreso_usuario_secundario;
@@ -293,20 +341,47 @@ int main()
         }
 
         if (ingreso_usuario == "3") {
-            cout << "\n\n~Generando lista de prioridad de pacientes~\n\n";
-            //leer todos los pacientes y generar la lista
-            generar_lista_prioridad(head);
+            cout << "   1~ Generar Cola de prioridad\n   2~ Imprimir Cola de prioridad actual\n   3~ Desencolar pacientes que ya fueron atendidos\n   4~ Vaciar Cola de espera\n   5~ Contar personas en la Cola de espera\n\n>";
+            cin >> ingreso_usuario_secundario;
 
-            //imprimir_lista_prioridad(head);
+            //se genera la cola de Priorirdad
+            if (ingreso_usuario_secundario == "1") {
+                cout << "\n\n~Generando Cola de prioridad de pacientes~\n\n";
+                //leer todos los pacientes y generar la lista
+                generar_lista_prioridad(head);
+                //imprimir_lista_prioridad(head);
+                //printColaDiabetin(cabeza_prioridad);
+                //cout << "\n\n";
+                }
 
-            printColaDiabetin(cabeza_prioridad);
+            //imprime la cola de personas en la lista de prioridad diabeticas
+            if (ingreso_usuario_secundario == "2") {
+                cout << "\n\n~~Imprimiendo cola de prioridad actual~~\n\n";
+                printColaDiabetin(cabeza_prioridad);}
 
-            cout << "\n\n"
-        }
+            //se desencolan X pacientes
+            if (ingreso_usuario_secundario == "3") {
+                cout << "\n~Cuantos pacientes fueron atendidos?\n\n>";
+                cin >> ingreso_terciario;
+                cout << "\n\n~Atendiendo pacientes~~\n\n";
+                int ingreso_terciario_numero = stoi(ingreso_terciario);
+                desencolarPaciente(ingreso_terciario_numero, cabeza_prioridad);}
 
+            //se vacia la cola de atencion
+            if (ingreso_usuario_secundario == "4") {
+                cout << "\n\nVaciando Cola de Atencion";
+                vaciarListaPrioridad(cabeza_prioridad);}
+
+            //se cuentan los pacientes actuales en la cola
+            if (ingreso_usuario_secundario == "5") {
+                cout << "\n\nContando Pacientes";
+                contarPacientes(cabeza_prioridad);}
+
+        //se sale del programa
         if (ingreso_usuario == "salir") {
             cout << "\n\n A Salido Correctamente del Programa :)";
         }
             
     }
+}
 }
