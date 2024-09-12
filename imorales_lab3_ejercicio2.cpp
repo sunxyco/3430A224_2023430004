@@ -68,42 +68,53 @@ struct Puerto {
     }
 
     //metodo para eliminar un contenedor en especifico
-    void eliminar_contenedor(string contenedor_a_eliminar){
-        //mi_puerto.bloques_pilas[1]->contenedores[0] -> almacena string
-
-        /* objetivo~
-        se quiere sacar contenedor "1/EMP1"
-
-        1 -> recorrer cada pila y localizar el contenedor, recorrer cada bloque - recorrer cada pila segun su tope
-        2 -> obtener indice el contenedor
-        3 -> comparar con el indice del tope del contenedor
-        4 -> pop() contenedores que estan por encima y repocisionarlos en otra pila que tenga espacio
-        5 -> eliminar contenedor X
-        */
-   
-        // Recorremos todas las pilas
+    void eliminar_contenedor(string contenedor_a_eliminar) {
         for (int bloque = 0; bloque < espacios_disponibles; bloque++) {
             cout << "Buscando en pila " << bloque + 1 << "\n";
-            
-            // Recorremos los elementos presentes en la pila
+
             for (int indice_contenedor = 0; indice_contenedor < bloques_pilas[bloque]->tope; indice_contenedor++) {
-                // Comparar si el contenedor actual es el que queremos eliminar
                 if (bloques_pilas[bloque]->contenedores[indice_contenedor] == contenedor_a_eliminar) {
                     cout << "Contenedor encontrado en la pila " << bloque + 1 << ", posición " << indice_contenedor << "\n";
 
-                                    if (indice_contenedor == bloques_pilas[bloque]->tope - 1) {
-                        bloques_pilas[bloque]->pop(); // Si es el último, simplemente hacer pop
+                    if (indice_contenedor == bloques_pilas[bloque]->tope - 1) {
+                        // Si es el último contenedor, simplemente hacer pop
+                        bloques_pilas[bloque]->pop();
                     } else {
-                        // Implementa la lógica para mover contenedores si es necesario
                         cout << "El contenedor no está en el tope, necesita reubicación.\n";
-                        // Aquí iría el código para reubicar contenedores.
+
+                        // Mover los contenedores que están por encima uno por uno
+                        for (int i = indice_contenedor + 1; i < bloques_pilas[bloque]->tope; i++) {
+                            string contenedor_a_mover = bloques_pilas[bloque]->contenedores[i];
+
+                            // Reubicar el contenedor en otra pila con espacio disponible
+                            bool reubicado = false;
+                            for (int j = 0; j < espacios_disponibles; j++) {
+                                if (bloques_pilas[j]->tope < bloques_pilas[j]->maximo) {
+                                    bloques_pilas[j]->push(contenedor_a_mover);
+                                    reubicado = true;
+                                    cout << "Contenedor " << contenedor_a_mover << " reubicado en la pila " << j + 1 << ".\n";
+                                    break;
+                                }
+                            }
+
+                            // Si no se pudo reubicar, mostrar un mensaje de error
+                            if (!reubicado) {
+                                cout << "Error: No se pudo reubicar el contenedor " << contenedor_a_mover << ".\n";
+                            }
+                        }
+
+                        // Actualizamos el tope para eliminar el contenedor
+                        bloques_pilas[bloque]->tope = indice_contenedor;
+                        cout << "Contenedor " << contenedor_a_eliminar << " eliminado.\n";
                     }
 
-                    return;
+                    return;  // Salir de la función una vez que se encontró y eliminó el contenedor
                 }
             }
-        } 
-    }   
+        }
+
+        cout << "Contenedor no encontrado.\n";
+    }
 };
 
 int main(){
@@ -146,8 +157,11 @@ int main(){
     cout << "Buscar contenedor ~ 1/EMP1\n";
     mi_puerto.eliminar_contenedor("1/EMP1");
 
-    cout << "\n\nBuscar contenedor ~ 2/EMP3\n";
-    mi_puerto.eliminar_contenedor("2/EMP3");
+    mi_puerto.mostrar_puerto();
 
+    cout << "\n\nBuscar contenedor ~ 2/EMP3\n";
+    mi_puerto.eliminar_contenedor("2/EMP1");
+
+    mi_puerto.mostrar_puerto();
     return 0;
 }
