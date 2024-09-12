@@ -66,8 +66,45 @@ struct Puerto {
             bloques_pilas[i]->mostrar();
         }
     }
-};
 
+    //metodo para eliminar un contenedor en especifico
+    void eliminar_contenedor(string contenedor_a_eliminar){
+        //mi_puerto.bloques_pilas[1]->contenedores[0] -> almacena string
+
+        /* objetivo~
+        se quiere sacar contenedor "1/EMP1"
+
+        1 -> recorrer cada pila y localizar el contenedor, recorrer cada bloque - recorrer cada pila segun su tope
+        2 -> obtener indice el contenedor
+        3 -> comparar con el indice del tope del contenedor
+        4 -> pop() contenedores que estan por encima y repocisionarlos en otra pila que tenga espacio
+        5 -> eliminar contenedor X
+        */
+   
+        // Recorremos todas las pilas
+        for (int bloque = 0; bloque < espacios_disponibles; bloque++) {
+            cout << "Buscando en pila " << bloque + 1 << "\n";
+            
+            // Recorremos los elementos presentes en la pila
+            for (int indice_contenedor = 0; indice_contenedor < bloques_pilas[bloque]->tope; indice_contenedor++) {
+                // Comparar si el contenedor actual es el que queremos eliminar
+                if (bloques_pilas[bloque]->contenedores[indice_contenedor] == contenedor_a_eliminar) {
+                    cout << "Contenedor encontrado en la pila " << bloque + 1 << ", posición " << indice_contenedor << "\n";
+
+                                    if (indice_contenedor == bloques_pilas[bloque]->tope - 1) {
+                        bloques_pilas[bloque]->pop(); // Si es el último, simplemente hacer pop
+                    } else {
+                        // Implementa la lógica para mover contenedores si es necesario
+                        cout << "El contenedor no está en el tope, necesita reubicación.\n";
+                        // Aquí iría el código para reubicar contenedores.
+                    }
+
+                    return;
+                }
+            }
+        } 
+    }   
+};
 
 int main(){
     cout << "Holamundo" << "\n\n";
@@ -90,7 +127,7 @@ int main(){
     // Crear un puerto con 3 pilas, donde cada pila puede almacenar hasta 5 elementos
 
     //n
-    int num_pilas = 3;
+    int num_pilas = 4;
     //m
     int capacidad_pilas = 5;
     Puerto mi_puerto(num_pilas, capacidad_pilas);
@@ -98,7 +135,7 @@ int main(){
     // Agregar elementos a las pilas
     mi_puerto.bloques_pilas[0]->push("1/EMP1");
     mi_puerto.bloques_pilas[0]->push("2/EMP1");
-    mi_puerto.bloques_pilas[1]->push("/EMP2");
+    mi_puerto.bloques_pilas[1]->push("1/EMP2");
     mi_puerto.bloques_pilas[2]->push("1/EMP3");
     mi_puerto.bloques_pilas[2]->push("2/EMP3");
     mi_puerto.bloques_pilas[0]->push("3/EMP1");
@@ -106,8 +143,11 @@ int main(){
     // Mostrar el contenido del puerto
     mi_puerto.mostrar_puerto();
 
-    //contenedores ~ 1/EMP1 - 2/EMP1 - 1/EMP2 - 1/EMP3
-    //crear puerto con m pilas de n elementos
+    cout << "Buscar contenedor ~ 1/EMP1\n";
+    mi_puerto.eliminar_contenedor("1/EMP1");
+
+    cout << "\n\nBuscar contenedor ~ 2/EMP3\n";
+    mi_puerto.eliminar_contenedor("2/EMP3");
 
     return 0;
 }
