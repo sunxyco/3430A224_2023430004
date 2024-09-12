@@ -22,56 +22,81 @@ struct Pila {
         }
     }
 
-    // Método para eliminar el último elemento de la pila
+    // Método para eliminar el último elemento de la pila ~ se reduce el tamaño de el array en 1 y se deja el ultimo elemento afuera
     void pop() {
         if (tope == 0) { // Verificar si la pila está vacía
             cout << "No hay elementos para eliminar" << "\n\n";
         } else {
-            tope--; // Simplemente disminuye el tope
+            tope = tope - 1; // Simplemente disminuye el tope
             cout << "Se eliminó el último elemento" << "\n\n";
         }
     }
 
     // Método para mostrar los elementos de la pila
     void mostrar() {
+        cout << "[";
         for (int i = 0; i < tope; i++) {
-            cout << valores[i] << " ";
+            cout << valores[i];
+
+            if (tope != i + 1){
+                cout << ", ";
+            }
         }
-        cout << "\n\n";
+        cout << "]\n\n";
     }
 };
 
 int main() {
     cout << "Hola mundo" << "\n\n";
 
-    // Crear pila de 4 espacios
-    Pila mi_pila(5);
-    cout << "Se creó la pila de 5 elementos" << "\n\n";
+    string cantidad_pila = "holamundo";
 
-    // Agregar elementos a la pila
-    cout << "Se le intento agregar los elementos 1, 2, 3, 4, 5, 6; como la pila es de 5 elementos el 6 no se agregó\n\n";
-    mi_pila.push(1);
-    mi_pila.push(2);
-    mi_pila.push(3);
-    mi_pila.push(4);
-    mi_pila.push(5);
-    mi_pila.push(6); // Intento de agregar un quinto elemento
+    cout << "Ingrese tamaño Maximo de la pila\n\n> ";
 
-    // Mostrar los elementos de la pila
-    mi_pila.mostrar();
+    cin >> cantidad_pila;
+    
+    int ingreso_int =  stoi(cantidad_pila);
 
-    mi_pila.pop();
+    // Crear pila de x espacios
+    Pila mi_pila(ingreso_int);
+    cout << "Se creó la pila de " << ingreso_int << " elementos" << "\n\n";
 
-    cout << "se eliminio el elemento en ultima posicion" << "\n\n";
+    string ingreso_opcion;
+    ingreso_opcion = "oal mundo";
 
-    mi_pila.mostrar();
+    string ingreso_secundario;
+    ingreso_secundario = "oda undo";
 
-    cout << "Se agrego intento agregar los elementos 7, 8, 9; en este caso los elementos 8 y 9 no pueden agregar \n\n";
-    mi_pila.push(7);
-    mi_pila.push(8);
-    mi_pila.push(9);
+    while (ingreso_opcion != "0") {
+        cout << "Agregar/push [1]\nRemover/pop  [2]\nVer pila     [3]\nSalir        [0]\n~~~~~~~~~~~~~~~~\nOpcion> ";
 
-    mi_pila.mostrar();
+        cin >> ingreso_opcion;
+
+        if (ingreso_opcion == "1") {
+            //agregar elemento
+            cout << "Ingrese el valor que se almacenara en la pila\n> ";
+            cin >> ingreso_secundario;
+            int dato_numero = stoi(ingreso_secundario);
+            mi_pila.push(dato_numero);
+
+        } else if (ingreso_opcion == "2")
+        {
+            //eliminar ultimo elemento
+
+            mi_pila.pop();
+
+        } else if (ingreso_opcion == "3")
+        {
+            //Ver pila
+
+            mi_pila.mostrar();
+
+        } else if (ingreso_opcion == "0")
+        {
+            //salir
+        } 
+        
+    }
 
     return 0;
 }
