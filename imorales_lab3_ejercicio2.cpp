@@ -5,20 +5,20 @@ using namespace std;
 struct Pila {
     int maximo;
     int tope;
-    int* valores; // Usamos un puntero para manejar el array dinámicamente
+    string* contenedores; // Usamos un puntero para manejar el array dinámicamente
 
     // Constructor para inicializar la pila - usado para cuando se crea la pila
     Pila(int max) : maximo(max), tope(0) {
-        valores = new int[maximo]; // Asignamos memoria para el array
+        contenedores = new string[maximo]; // Asignamos memoria para el array
     }
 
     // Método para agregar un elemento a la pila
-    void push(int valor) {
+    void push(string nombre_contenedor) {
         if (tope < maximo) {
-            valores[tope] = valor; // Agrega el elemento y aumenta el tope
+            contenedores[tope] = nombre_contenedor; // Agrega el elemento y aumenta el tope
             tope = tope + 1;
         } else {
-            cout << "Pila llena, imposible agregar elemento " << valor << "\n\n";
+            cout << "Pila llena, imposible agregar elemento " << nombre_contenedor << "\n\n";
         }
     }
 
@@ -36,7 +36,7 @@ struct Pila {
     void mostrar() {
         cout << "[";
         for (int i = 0; i < tope; i++) {
-            cout << valores[i];
+            cout << contenedores[i];
 
             if (tope != i + 1){
                 cout << ", ";
@@ -96,11 +96,12 @@ int main(){
     Puerto mi_puerto(num_pilas, capacidad_pilas);
 
     // Agregar elementos a las pilas
-    mi_puerto.bloques_pilas[0]->push(10);
-    mi_puerto.bloques_pilas[0]->push(20);
-    mi_puerto.bloques_pilas[1]->push(30);
-    mi_puerto.bloques_pilas[2]->push(40);
-    mi_puerto.bloques_pilas[2]->push(50);
+    mi_puerto.bloques_pilas[0]->push("1/EMP1");
+    mi_puerto.bloques_pilas[0]->push("2/EMP1");
+    mi_puerto.bloques_pilas[1]->push("/EMP2");
+    mi_puerto.bloques_pilas[2]->push("1/EMP3");
+    mi_puerto.bloques_pilas[2]->push("2/EMP3");
+    mi_puerto.bloques_pilas[0]->push("3/EMP1");
 
     // Mostrar el contenido del puerto
     mi_puerto.mostrar_puerto();
