@@ -193,17 +193,6 @@ int main() {
             break;
         }
     }
-    /*
-    cout << "Buscar contenedor ~ 1/EMP1\n";
-    mi_puerto.eliminar_contenedor("1/EMP1");
-
-    mi_puerto.mostrar_puerto();
-
-    cout << "\n\nBuscar contenedor ~ 2/EMP3\n";
-    mi_puerto.eliminar_contenedor("2/EMP3");
-
-    mi_puerto.mostrar_puerto();
-    */
-
+    
     return 0;
 }
