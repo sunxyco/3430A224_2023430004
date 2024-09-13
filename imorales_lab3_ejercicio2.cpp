@@ -2,6 +2,7 @@
 #include <string>
 #include <random>
 #include <ctime>
+#include <set>
 using namespace std;
 
 struct Pila {
@@ -30,7 +31,7 @@ struct Pila {
             cout << "No hay elementos para eliminar" << "\n\n";
         } else {
             tope = tope - 1; // Simplemente disminuye el tope
-            cout << "Se eliminó el último elemento" << "\n\n";
+            //cout << "Se eliminó el último elemento" << "\n\n";
         }
     }
 
@@ -68,21 +69,28 @@ struct Puerto {
             cout << "Pila " << i + 1 << ": ";
             bloques_pilas[i]->mostrar();
         }
-        cour << "\n\n"
-    }
+        cout << "\n\n";
+    };
 
-    // Método para agregar elementos aleatorios
+    // Método para agregar elementos aleatorios sin repetición
     void agregar_elementos_aleatorios() {
         // Inicializar generador aleatorio
         srand(static_cast<unsigned int>(time(0))); // Semilla para el generador aleatorio
 
+        set<string> contenedores_unicos; // Conjunto para evitar duplicados
+
         for (int i = 0; i < espacios_disponibles; i++) {
             int num_elementos = rand() % (bloques_pilas[i]->maximo + 1); // Número aleatorio de elementos a agregar
             for (int j = 0; j < num_elementos; j++) {
-                // Generar un string en el formato "x/EMPy"
-                int x = rand() % 4 + 1; // Número aleatorio entre 1 y 4
-                int y = rand() % 3 + 1; // Número aleatorio entre 1 y 3
-                string contenedor = to_string(x) + "/EMP" + to_string(y);
+                string contenedor;
+                do {
+                    // Generar un string en el formato "x/EMPy"
+                    int x = rand() % espacios_disponibles + 1; // Número aleatorio entre 1 y cantidad de pilas
+                    int y = rand() % bloques_pilas[i]->maximo + 1; // Número aleatorio entre 1 y capacidad de las pilas
+                    contenedor = to_string(x) + "/EMP" + to_string(y);
+                } while (contenedores_unicos.find(contenedor) != contenedores_unicos.end()); // Asegura que no se repita
+
+                contenedores_unicos.insert(contenedor);
                 bloques_pilas[i]->push(contenedor);
             }
         }
@@ -90,6 +98,8 @@ struct Puerto {
 
     // Método para eliminar un contenedor en específico
     void eliminar_contenedor(string contenedor_a_eliminar) {
+
+        cout << "\n\nComenzando Procedimiento Elimindar Contenedor\n\n";
         for (int bloque = 0; bloque < espacios_disponibles; bloque++) {
             cout << "Buscando en pila " << bloque + 1 << "\n";
 
@@ -104,18 +114,25 @@ struct Puerto {
                         cout << "El contenedor no está en el tope, necesita reubicación.\n";
 
                         // Mover los contenedores que están por encima uno por uno
-                        for (int i = indice_contenedor + 1; i < bloques_pilas[bloque]->tope; i++) {
+                        for (int i = bloques_pilas[bloque]->tope - 1; i > indice_contenedor; i--) {
+                            //copia contenedor
                             string contenedor_a_mover = bloques_pilas[bloque]->contenedores[i];
 
                             // Reubicar el contenedor en otra pila con espacio disponible
                             bool reubicado = false;
                             for (int j = 0; j < espacios_disponibles; j++) {
-                                if (bloques_pilas[j]->tope < bloques_pilas[j]->maximo) {
+                                if (j != bloque && bloques_pilas[j]->tope < bloques_pilas[j]->maximo) {
+                                    // Reubicar solo en pilas diferentes a la actual (j != bloque)
                                     bloques_pilas[j]->push(contenedor_a_mover);
                                     reubicado = true;
                                     cout << "Contenedor " << contenedor_a_mover << " reubicado en la pila " << j + 1 << ".\n";
                                     break;
                                 }
+                            }
+
+                            if (reubicado) {
+                                bloques_pilas[bloque]->pop();
+                                mostrar_puerto();
                             }
 
                             // Si no se pudo reubicar, mostrar un mensaje de error
@@ -143,9 +160,9 @@ int main() {
     string ingreso_num_capacidad;
 
     cout << "Ingrese numero de Pilas\n>";
-    cin >> ingreso_num_pilas; // Cambié esto para que lea la entrada
+    cin >> ingreso_num_pilas;
     cout << "Ingrese Capacidad de las Pilas\n> ";
-    cin >> ingreso_num_capacidad; // Cambié esto para que lea la entrada
+    cin >> ingreso_num_capacidad;
 
     // n
     int num_pilas = stoi(ingreso_num_pilas);
@@ -160,6 +177,22 @@ int main() {
     // Mostrar el contenido del puerto
     mi_puerto.mostrar_puerto();
 
+    string string_ingreso;
+    string_ingreso = "holamundo";
+
+    while (string_ingreso != "salir") {
+        cout << "Ingrese El NOMBRE de el contenedor que desea eliminar ~ ('1/EMP1')\nSalir ~ (salir)\n> ";
+    
+        cin >> string_ingreso;
+
+        if (string_ingreso != "salir") {
+            mi_puerto.eliminar_contenedor(string_ingreso);
+            cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n~~~~~~~~~Puerto Actual~~~~~~~~~~~~~\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n";
+            mi_puerto.mostrar_puerto();
+        } else {
+            break;
+        }
+    }
     /*
     cout << "Buscar contenedor ~ 1/EMP1\n";
     mi_puerto.eliminar_contenedor("1/EMP1");
