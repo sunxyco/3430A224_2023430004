@@ -17,6 +17,7 @@ Node* createNode(int data) {
     return newNode;
 }
 
+
 class Arbol {
 private:
     Node* root = nullptr;
@@ -29,78 +30,32 @@ private:
         }
 
         if (data < node->info) {
-            // Insertar en el subarbol izquierdo
             node->left = insertNode(node->left, data);
         } else if (data > node->info) {
-            // Insertar en el subarbol derecho
             node->right = insertNode(node->right, data);
         } else {
-            // El dato ya esta en el arbol
             cout << "El nodo ya se encuentra en el árbol: " << data << endl;
         }
 
         return node;
     }
 
-    // Metodo recursivo privado para imprimir el arbol en preorden
-    void printPreOrden(Node* node) const {
-        if (node == nullptr) {
-            return;
+    // Metodo recursivo privado para buscar un nodo
+    bool buscar_2(Node* root, int buscar) { 
+        if (root == nullptr) {
+            return false; 
+        } else if (root->info == buscar) { 
+            return true; 
+        } else if (buscar < root->info) { 
+            return buscar_2(root->left, buscar); 
+        } else {
+            return buscar_2(root->right, buscar); 
         }
-        cout << node->info << " "; // Imprimir el dato del nodo actual
-        printPreOrden(node->left);  // Recorrer el subarbol izquierdo
-        printPreOrden(node->right); // Recorrer el subarbol derecho
     }
 
-    // In-orden traversal: Left -> Root -> Right
-    void printInOrden(Node* node) const {
-        if (node == nullptr) {
-            return;
-        }
-        printInOrden(node->left);
-        cout << node->info << " ";
-        printInOrden(node->right);
-    }
-
-    void printPostOrden(Node* node) const {
-        if (node == nullptr) {
-            return;
-        }
-        printPostOrden(node->left);
-        printPostOrden(node->right);
-        cout << node->info << " ";
-    }
-
-public:
-    Arbol() : root(nullptr) {}
-
-    // Metodo publico para insertar un nodo en el arbol
-    void insert(int data) {
-        root = insertNode(root, data);
-    }
-
-    // Metodo publico para imprimir el arbol en preorden
-    void printPreOrden() const {
-        printPreOrden(root);
-        cout << endl;
-    }
-
-    void printInOrden() const {
-        printInOrden(root);
-        cout << endl;
-    }
-
-    void printPostOrden() const {
-    printPostOrden(root);
-    cout << endl;
-    }
-
-    // Otros metodos publicos y privados (si es necesario)
-    
-    //eliminar (root, elemento_eliminar)
+    // Metodo recursivo privado para eliminar un nodo
     Node* deleteNode(Node* root, int key) { 
-
-        if (root == NULL) {
+        if (root == nullptr) {
             return root; 
         } 
 
@@ -109,18 +64,18 @@ public:
         } else if (key > root->info) { 
             root->right = deleteNode(root->right, key);
         } else { 
-            if (root->left == NULL) { 
+            if (root->left == nullptr) { 
                 Node* temp = root->right;
                 delete root; 
                 return temp; 
-            } else if (root->right == NULL) {
+            } else if (root->right == nullptr) {
                 Node* temp = root->left; 
                 delete root;
                 return temp; 
             } 
 
             Node* temp = root->right;
-            while (temp->left != NULL) { 
+            while (temp->left != nullptr) { 
                 temp = temp->left; 
             } 
 
@@ -131,66 +86,107 @@ public:
         return root;
     }
 
-
-    //buscar
-    //busca en el arbol y se retorna true si existe (root, elemento_buscar)
-    bool buscar_2(Node* root, int buscar) { 
-        if (root == NULL) {
-            return false; 
-        } 
-        else if (root->info == buscar) { 
-            return true; 
+    // Metodo recursivo privado para imprimir el arbol en preorden
+    void printPreOrden(Node* node) const {
+        if (node == nullptr) {
+            return;
         }
-        else if (buscar <= root->info) { 
-            return buscar_2(root->left, buscar); 
-        } else {
-            return buscar_2(root->right, buscar); 
-        }
+        cout << node->info << " ";
+        printPreOrden(node->left);
+        printPreOrden(node->right);
     }
 
-    void buscar_1(int numero_buscar) {
-        if ( buscar_2(root, numero_buscar) ) {
-            cout << "\nSe encontró el numero ~ " << numero_buscar << "\n";
-        } else {
-            cout << "\nNo se a encontrado el numero ~ " << numero_buscar << "\n";
+    // Metodo recursivo privado para imprimir el arbol en inorden
+    void printInOrden(Node* node) const {
+        if (node == nullptr) {
+            return;
         }
+        printInOrden(node->left);
+        cout << node->info << " ";
+        printInOrden(node->right);
     }
 
-    void eliminar_elemento(int numero_elimnar) {
-        if ( buscar_2(root, numero_elimnar) ) {
-            cout << "\nEliminando elemento\n";
-            deleteNode(root, numero_elimnar);
-            cout << "\nElemento eliminado\n";
-        } else {
-            cout << "\nNo se a encontrado el elemento\n";
+    // Metodo recursivo privado para imprimir el arbol en postorden
+    void printPostOrden(Node* node) const {
+        if (node == nullptr) {
+            return;
         }
+        printPostOrden(node->left);
+        printPostOrden(node->right);
+        cout << node->info << " ";
     }
 
-    // Recorrer el arbol en preorden y escribir en el archivo
+    // Metodo recursivo privado para recorrer el arbol
     void recorrer(Node* node, ofstream& fp) {
         if (node != nullptr) {
             if (node->left != nullptr) {
                 fp << node->info << "->" << node->left->info << ";" << endl;
             } else {
-                string cadena = to_string(node->info) + "i"; // Convertir a string primero
-                fp << "\"" << cadena << "\" [shape=point];" << endl; // Comillas alrededor del nombre del nodo ~ sino, se generan ambiguedades con el graphviz
-                fp << node->info << "->\"" << cadena << "\";" << endl; // Comillas alrededor de la referencia
+                string cadena = to_string(node->info) + "i"; 
+                fp << "\"" << cadena << "\" [shape=point];" << endl;
+                fp << node->info << "->\"" << cadena << "\";" << endl;
             }
 
             if (node->right != nullptr) {
                 fp << node->info << "->" << node->right->info << ";" << endl;
             } else {
-                string cadena = to_string(node->info) + "d"; // Convertir a string primero
-                fp << "\"" << cadena << "\" [shape=point];" << endl; // Comillas alrededor del nombre del nodo ~ sino, se generan ambiguedades con el graphviz
-                fp << node->info << "->\"" << cadena << "\";" << endl; // Comillas alrededor de la referencia
+                string cadena = to_string(node->info) + "d"; 
+                fp << "\"" << cadena << "\" [shape=point];" << endl;
+                fp << node->info << "->\"" << cadena << "\";" << endl;
             }
 
             recorrer(node->left, fp);
             recorrer(node->right, fp);
         }
     }
-    
-    // Generar y mostrar la visualizacion del arbol
+
+public:
+    Arbol() : root(nullptr) {}
+
+    // Metodo publico para insertar un nodo
+    void insert(int data) {
+        root = insertNode(root, data);
+    }
+
+    // Metodo publico para buscar un nodo
+    void buscar_1(int numero_buscar) {
+        if (buscar_2(root, numero_buscar)) {
+            cout << "\nSe encontró el numero ~ " << numero_buscar << "\n";
+        } else {
+            cout << "\nNo se ha encontrado el numero ~ " << numero_buscar << "\n";
+        }
+    }
+
+    // Metodo publico para eliminar un nodo
+    void eliminar_elemento(int numero_eliminar) {
+        if (buscar_2(root, numero_eliminar)) {
+            cout << "\nEliminando elemento\n";
+            root = deleteNode(root, numero_eliminar);
+            cout << "\nElemento eliminado\n";
+        } else {
+            cout << "\nNo se ha encontrado el elemento\n";
+        }
+    }
+
+    // Metodo publico para imprimir el arbol en preorden
+    void printPreOrden() const {
+        printPreOrden(root);
+        cout << endl;
+    }
+
+    // Metodo publico para imprimir el arbol en inorden
+    void printInOrden() const {
+        printInOrden(root);
+        cout << endl;
+    }
+
+    // Metodo publico para imprimir el arbol en postorden
+    void printPostOrden() const {
+        printPostOrden(root);
+        cout << endl;
+    }
+
+    // Metodo publico para generar y mostrar la visualizacion del arbol
     void visualize() {
         ofstream fp("mi_arbol.txt");
 
@@ -205,14 +201,11 @@ public:
         recorrer(root, fp);
 
         fp << "}" << endl;
-
         fp.close();
 
-        // Generar y mostrar la imagen del arbol
         system("dot -Tpng -o mi_arbol.png mi_arbol.txt");
         system("start mi_arbol.png");
     }
-
 };
 
 int main() {
