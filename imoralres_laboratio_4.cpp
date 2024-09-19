@@ -1,5 +1,5 @@
+#include <fstream>
 #include <iostream>
-
 using namespace std;
 
 struct Node {
@@ -96,6 +96,54 @@ public:
     }
 
     // Otros metodos publicos y privados (si es necesario)
+    
+    // Recorrer el arbol en preorden y escribir en el archivo
+    void recorrer(Node* node, ofstream& fp) {
+        if (node != nullptr) {
+            if (node->left != nullptr) {
+                fp << node->info << "->" << node->left->info << ";" << endl;
+            } else {
+                string cadena = to_string(node->info) + "i"; // Convertir a string primero
+                fp << "\"" << cadena << "\" [shape=point];" << endl; // Comillas alrededor del nombre del nodo ~ sino, se generan ambiguedades con el graphviz
+                fp << node->info << "->\"" << cadena << "\";" << endl; // Comillas alrededor de la referencia
+            }
+
+            if (node->right != nullptr) {
+                fp << node->info << "->" << node->right->info << ";" << endl;
+            } else {
+                string cadena = to_string(node->info) + "d"; // Convertir a string primero
+                fp << "\"" << cadena << "\" [shape=point];" << endl; // Comillas alrededor del nombre del nodo ~ sino, se generan ambiguedades con el graphviz
+                fp << node->info << "->\"" << cadena << "\";" << endl; // Comillas alrededor de la referencia
+            }
+
+            recorrer(node->left, fp);
+            recorrer(node->right, fp);
+        }
+    }
+    
+    // Generar y mostrar la visualizacion del arbol
+    void visualize() {
+        ofstream fp("mi_arbol.txt");
+
+        if (!fp.is_open()) {
+            cerr << "Error al abrir el archivo mi_arbol.txt" << endl;
+            return;
+        }
+
+        fp << "digraph G {" << endl;
+        fp << "node [style=filled fillcolor=yellow];" << endl;
+
+        recorrer(root, fp);
+
+        fp << "}" << endl;
+
+        fp.close();
+
+        // Generar y mostrar la imagen del arbol
+        system("dot -Tpng -o mi_arbol.png mi_arbol.txt");
+        system("start mi_arbol.png");
+    }
+
 };
 
 int main() {
@@ -116,6 +164,8 @@ int main() {
     arbol.printInOrden();
     cout << "Recorrido en PostOrden: ";
     arbol.printPostOrden();
+
+    arbol.visualize();
 
     return 0;
 }
