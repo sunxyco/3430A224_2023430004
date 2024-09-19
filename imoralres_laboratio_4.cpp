@@ -97,6 +97,30 @@ public:
 
     // Otros metodos publicos y privados (si es necesario)
     
+    //buscar ~ eliminar
+    //busca en el arbol y se retorna true si existe
+    bool buscar_2(Node* root, int buscar) { 
+        if (root == NULL) {
+            return false; 
+        } 
+        else if (root->info == buscar) { 
+            return true; 
+        }
+        else if (buscar <= root->info) { 
+            return buscar_2(root->left, buscar); 
+        } else {
+            return buscar_2(root->right, buscar); 
+        }
+    }
+
+    void buscar_1(int numero_buscar) {
+        if ( buscar_2(root, numero_buscar) ) {
+            cout << "\nSe encontró el numero ~ " << numero_buscar << "\n";
+        } else {
+            cout << "\nNo se a encontrado el numero ~ " << numero_buscar << "\n";
+        }
+    }
+
     // Recorrer el arbol en preorden y escribir en el archivo
     void recorrer(Node* node, ofstream& fp) {
         if (node != nullptr) {
@@ -167,5 +191,7 @@ int main() {
 
     arbol.visualize();
 
+    arbol.buscar_1(130);
+    arbol.buscar_1(129);
     return 0;
 }
