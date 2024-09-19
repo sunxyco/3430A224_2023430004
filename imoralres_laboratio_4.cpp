@@ -97,8 +97,43 @@ public:
 
     // Otros metodos publicos y privados (si es necesario)
     
-    //buscar ~ eliminar
-    //busca en el arbol y se retorna true si existe
+    //eliminar (root, elemento_eliminar)
+    Node* deleteNode(Node* root, int key) { 
+
+        if (root == NULL) {
+            return root; 
+        } 
+
+        if (key < root->info) { 
+            root->left = deleteNode (root->left, key);
+        } else if (key > root->info) { 
+            root->right = deleteNode(root->right, key);
+        } else { 
+            if (root->left == NULL) { 
+                Node* temp = root->right;
+                delete root; 
+                return temp; 
+            } else if (root->right == NULL) {
+                Node* temp = root->left; 
+                delete root;
+                return temp; 
+            } 
+
+            Node* temp = root->right;
+            while (temp->left != NULL) { 
+                temp = temp->left; 
+            } 
+
+            root->info = temp->info; 
+            root->right = deleteNode(root->right, temp->info); 
+        } 
+
+        return root;
+    }
+
+
+    //buscar
+    //busca en el arbol y se retorna true si existe (root, elemento_buscar)
     bool buscar_2(Node* root, int buscar) { 
         if (root == NULL) {
             return false; 
@@ -118,6 +153,16 @@ public:
             cout << "\nSe encontró el numero ~ " << numero_buscar << "\n";
         } else {
             cout << "\nNo se a encontrado el numero ~ " << numero_buscar << "\n";
+        }
+    }
+
+    void eliminar_elemento(int numero_elimnar) {
+        if ( buscar_2(root, numero_elimnar) ) {
+            cout << "\nEliminando elemento\n";
+            deleteNode(root, numero_elimnar);
+            cout << "\nElemento eliminado\n";
+        } else {
+            cout << "\nNo se a encontrado el elemento\n";
         }
     }
 
@@ -193,5 +238,13 @@ int main() {
 
     arbol.buscar_1(130);
     arbol.buscar_1(129);
+
+    arbol.eliminar_elemento(99);
+    
+    string hola;
+    hola = "holamundo";
+    cin >> hola;
+    
+    arbol.visualize();
     return 0;
 }
