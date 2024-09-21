@@ -231,12 +231,15 @@ int main() {
 
     arbol.buscar_1(130);
     arbol.buscar_1(129);
-
-    arbol.eliminar_elemento(99);
     
     string hola;
     hola = "holamundo";
+
+    cout << "Ingrese el numero del nodo que desea eliminar\n\n> ";
     cin >> hola;
+
+    int nodo_eliminar = stoi(hola);
+    arbol.eliminar_elemento(nodo_eliminar);
     
     arbol.visualize();
     return 0;
