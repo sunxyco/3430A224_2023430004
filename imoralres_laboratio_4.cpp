@@ -26,6 +26,7 @@ private:
     Node* insertNode(Node* node, int data) {
         if (node == nullptr) {
             // Crear un nuevo nodo si se encuentra una posicion vacia
+            cout << "Se a ingresado el nodo ~ " << data << "\n";
             return createNode(data);
         }
 
@@ -56,6 +57,7 @@ private:
     // Metodo recursivo privado para eliminar un nodo
     Node* deleteNode(Node* root, int key) { 
         if (root == nullptr) {
+            //cout << "Se a eliminado el nodo ~ " << key << "\n";
             return root; 
         } 
 
@@ -162,7 +164,7 @@ public:
         if (buscar_2(root, numero_eliminar)) {
             cout << "\nEliminando elemento\n";
             root = deleteNode(root, numero_eliminar);
-            cout << "\nElemento eliminado\n";
+            cout << "Elemento eliminado ~ " << numero_eliminar << "\n";
         } else {
             cout << "\nNo se ha encontrado el elemento\n";
         }
@@ -187,7 +189,7 @@ public:
     }
 
     // Metodo publico para generar y mostrar la visualizacion del arbol
-    void visualize() {
+    void visualize(int sistema_usuario) {
         ofstream fp("mi_arbol.txt");
 
         if (!fp.is_open()) {
@@ -204,7 +206,16 @@ public:
         fp.close();
 
         system("dot -Tpng -o mi_arbol.png mi_arbol.txt");
-        system("start mi_arbol.png");
+        
+        if (sistema_usuario == 1) {
+            cout << "Diagrama~\n";
+            system("start mi_arbol.png");
+        } else if (sistema_usuario == 2) {
+            system("eog mi_arbol.png");
+            cout << "Diagrama~\n";
+        } else {
+            cout << "No a sido posible generar la imagen\n";
+        }
     }
 };
 
@@ -237,17 +248,17 @@ int main() {
 
     Arbol arbolBinario;
 
-    int opcion;
+    int opcion = 11;
     int valor;
     int nuevoValor;
-    string ingreso_usuario;
 
     while (opcion != 0) {
 
-        cout << "Menu:\n1. Insertar numero\n2. Eliminar numero\n3. Modificar elemenot\n4. Mostrar Contenido del arbol, PreOrden, InOrden, PosrOrden\n5. Generar imagen Grafo\n6. Ingresar valores por defecto\n0. Salir\n\n>";
+        cout << "\nMenu:\n1. Insertar numero\n2. Eliminar numero\n3. Modificar elemenot\n4. Mostrar Contenido del arbol, PreOrden, InOrden, PosrOrden\n5. Generar imagen Grafo\n6. Ingresar valores por defecto\n0. Salir\n\n";
 
-        cin >> opcion;
+        opcion = obtenerNumeroValido("> ");
 
+        //menu
         switch (opcion) {
             case 1:
                 // Insertar número
@@ -273,7 +284,7 @@ int main() {
                 break;
             case 4:
                 // Mostrar contenido del grafo            
-                
+                cout << "\nContenido del Arbol~\n\n";
                 // Imprimir el arbolBinario en preorden
                 cout << "Recorrido en PreOrden: ";
                 arbolBinario.printPreOrden();
@@ -282,12 +293,26 @@ int main() {
                 cout << "Recorrido en PostOrden: ";
                 arbolBinario.printPostOrden();
 
+                cout << "\n\n";
                 break;
-            case 5:
+            case 5:{
                 // Mostrar vizualizacion del grafo
-                arbolBinario.visualize();
+                cout << "    Ingrese su sitema operativo\n    1. Windows\n    2. Linux\n\n";
+                int sub_ingreso = 0;
+
+                while (sub_ingreso != 1 && sub_ingreso != 2) {
+                    sub_ingreso = obtenerNumeroValido(">");
+
+                    if (sub_ingreso != 1 && sub_ingreso != 2) {
+                        cout << "    Opción no válida. Por favor ingrese nuevamente su opcion\n";
+                    }
+                }
+                
+                //1 - Windows / 2 - Linux
+                arbolBinario.visualize(sub_ingreso);
 
                 break;
+                }
             case 0:
                 //salir
                 cout << "Se a cerrado el programa";
