@@ -196,7 +196,7 @@ public:
         }
 
         fp << "digraph G {" << endl;
-        fp << "node [style=filled fillcolor=yellow];" << endl;
+        fp << "node [style=filled fillcolor=pink];" << endl;
 
         recorrer(root, fp);
 
@@ -208,39 +208,110 @@ public:
     }
 };
 
-int main() {
-    Arbol arbol;
+// Función para validar que la entrada del usuario sea un entero
+int obtenerNumeroValido(const string& mensaje) {
+    string ingreso_usuario;
+    bool valid = false;
+    int numero = 0;
 
-    // Insertar numeros en el arbol usando el metodo insert
-    int mis_ints[11] = {120, 87, 140, 43, 99, 130, 22, 65, 93, 135, 56};
-    
-    // Recorrer el arreglo e insertar los
-    for (int i = 0; i < 11; i++) {
-        arbol.insert(mis_ints[i]);
+    while (!valid) {
+        cout << mensaje;
+        cin >> ingreso_usuario;
+
+        try {
+            numero = stoi(ingreso_usuario);  // Intenta convertir la entrada a un entero
+            valid = true;  // Si la conversión es exitosa, salimos del bucle
+        }
+        catch (const invalid_argument& e) {
+            cout << "Entrada inválida, por favor ingresa un número entero válido.\n";
+        }
+        catch (const out_of_range& e) {
+            cout << "Número fuera de rango, intenta de nuevo.\n";
+        }
     }
-    
-    // Imprimir el arbol en preorden
-    cout << "Recorrido en preorden: ";
-    arbol.printPreOrden();
-    cout << "Recorrido en InOrden: ";
-    arbol.printInOrden();
-    cout << "Recorrido en PostOrden: ";
-    arbol.printPostOrden();
 
-    arbol.visualize();
+    return numero;  // Devuelve el número entero validado
+}
 
-    arbol.buscar_1(130);
-    arbol.buscar_1(129);
-    
-    string hola;
-    hola = "holamundo";
+int main() {
 
-    cout << "Ingrese el numero del nodo que desea eliminar\n\n> ";
-    cin >> hola;
+    Arbol arbolBinario;
 
-    int nodo_eliminar = stoi(hola);
-    arbol.eliminar_elemento(nodo_eliminar);
-    
-    arbol.visualize();
-    return 0;
+    int opcion;
+    int valor;
+    int nuevoValor;
+    string ingreso_usuario;
+
+    while (opcion != 0) {
+
+        cout << "Menu:\n1. Insertar numero\n2. Eliminar numero\n3. Modificar elemenot\n4. Mostrar Contenido del arbol, PreOrden, InOrden, PosrOrden\n5. Generar imagen Grafo\n6. Ingresar valores por defecto\n0. Salir\n\n>";
+
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1:
+                // Insertar número
+                valor = obtenerNumeroValido("Ingresa un número entero: ");
+                arbolBinario.insert(valor);
+
+                break;
+            case 2:
+                // Eliminar número
+                valor = obtenerNumeroValido("Ingresa un número entero para eliminar: ");
+                arbolBinario.eliminar_elemento(valor);
+
+                break;
+            case 3:
+                // 3) Modificar un elemento buscado (eliminar valor viejo e insertar el nuevo valor).
+                // Modificar numero ~ se quiere crear un nodo y eliminar otro ~ insertar/eliminar
+                valor = obtenerNumeroValido("Ingresa el numero del nodo que quiere modificar: ");
+                nuevoValor = obtenerNumeroValido("Ingresa el nuevo numero: ");
+
+                arbolBinario.eliminar_elemento(valor);
+                arbolBinario.insert(nuevoValor);
+
+                break;
+            case 4:
+                // Mostrar contenido del grafo            
+                
+                // Imprimir el arbolBinario en preorden
+                cout << "Recorrido en PreOrden: ";
+                arbolBinario.printPreOrden();
+                cout << "Recorrido en InOrden: ";
+                arbolBinario.printInOrden();
+                cout << "Recorrido en PostOrden: ";
+                arbolBinario.printPostOrden();
+
+                break;
+            case 5:
+                // Mostrar vizualizacion del grafo
+                arbolBinario.visualize();
+
+                break;
+            case 0:
+                //salir
+                cout << "Se a cerrado el programa";
+                
+                break;
+            case 6: {
+                //ingresar valores por defecto
+
+                // Insertar numeros en el arbolBinario usando el metodo insert
+                int mis_ints[11] = {120, 87, 140, 43, 99, 130, 22, 65, 93, 135, 56};
+                
+                // Recorrer el arreglo e insertar los
+                for (int i = 0; i < 11; i++) {
+                    arbolBinario.insert(mis_ints[i]);
+                }
+                cout << "\n\nSe ingresaron los valores [120, 87, 140, 43, 99, 130, 22, 65, 93, 135, 56]\n\n";
+
+                break;
+            }
+
+            default:
+                cout << "\n~ " << opcion << " ~ No es una opcion valida, porfavor intentelo nuevamente\n\n";
+
+                break;
+        }
+    }
 }
