@@ -219,6 +219,8 @@ public:
     }
 };
 
+
+
 // Función para validar que la entrada del usuario sea un entero
 int obtenerNumeroValido(const string& mensaje) {
     string ingreso_usuario;
@@ -254,7 +256,7 @@ int main() {
 
     while (opcion != 0) {
 
-        cout << "\nMenu:\n1. Insertar numero\n2. Eliminar numero\n3. Modificar elemenot\n4. Mostrar Contenido del arbol, PreOrden, InOrden, PosrOrden\n5. Generar imagen Grafo\n6. Ingresar valores por defecto\n0. Salir\n\n";
+        cout << "\nMenu:\n1. Insertar numero\n2. Eliminar numero\n3. Modificar elemenot\n4. Mostrar Contenido del arbol, PreOrden, InOrden, PosrOrden\n5. Generar imagen Grafo\n6. Ingresar valores por defecto ~ [120, 87, 140, 43, 99, 130, 22, 65, 93, 135, 56]\n0. Salir\n\n";
 
         opcion = obtenerNumeroValido("> ");
 
@@ -328,7 +330,7 @@ int main() {
                 for (int i = 0; i < 11; i++) {
                     arbolBinario.insert(mis_ints[i]);
                 }
-                cout << "\n\nSe ingresaron los valores [120, 87, 140, 43, 99, 130, 22, 65, 93, 135, 56]\n\n";
+                cout << "\n\nSe ingresaron los valores\n\n";
 
                 break;
             }
