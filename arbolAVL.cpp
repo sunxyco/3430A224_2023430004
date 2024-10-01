@@ -49,23 +49,7 @@ int obtenerNumeroValido(const string& mensaje) {
 /* Insertar en arbol ordenado: */
 void Insertar(Arbol* raiz, int dat);             //~ list
 /* Borrar un elemento: */
-void Borrar(Arbol* raiz, int dat);               //~ aser
-/* Funcion de busqueda: */
 
-int Buscar(Arbol raiz, int dat){
-
-    if (raiz == nullptr) {
-        cout << "\nNO SE ENCONTRO EL NUMERO" << endl;
-        return false;
-    } else if (raiz -> dato == dat) {
-        cout << "\nSE ENCONTRO EL dat" << endl;
-        return true;
-    } else if (dat < raiz -> dato) {
-        return Buscar(raiz -> izquierdo, dat);
-    } else {
-        return Buscar(raiz -> derecho, dat);
-    }
-}                 //~ aser
 
 /* Comprobar si es un nodo hoja: */ 
 int EsHoja(pNodo r);                          //~aser nose
@@ -93,6 +77,107 @@ void auxAltura(Arbol a, int, int*);
 void MenuPrincipal();
 void GenerarGrafo(Arbol);
 
+
+void Borrar(Arbol* a, int dato) {
+    pNodo padre = nullptr;
+    pNodo actual = *a;
+
+    // Buscar el nodo correspondiente al dato ingresado
+    while (actual != nullptr && dato != actual->dato) {
+        padre = actual;
+        if (dato < actual->dato) {
+            actual = actual->izquierdo;
+        } else {
+            actual = actual->derecho;
+        }
+    }
+
+    // Si no se encuentra el dato, se cierra el procedimiento
+    if (actual == nullptr) {
+        cout << "El dato no se encuentra en el árbol." << endl;
+        return;
+    }
+
+    // Caso 1: Si el nodo es un nodo hoja
+    if (actual->izquierdo == nullptr && actual->derecho == nullptr) {
+        if (padre == nullptr) {
+            // Si es la raíz
+            *a = nullptr;
+        } else if (padre->izquierdo == actual) {
+            padre->izquierdo = nullptr;
+        } else {
+            padre->derecho = nullptr;
+        }
+    // Caso 2: Si tiene un solo hijo
+    } else if (actual->izquierdo == nullptr || actual->derecho == nullptr) {
+        pNodo hijo = (actual->izquierdo != nullptr) ? actual->izquierdo : actual->derecho;
+
+        if (padre == nullptr) {
+            // Si es la raíz
+            *a = hijo;
+        } else if (padre->izquierdo == actual) {
+            padre->izquierdo = hijo;
+        } else {
+            padre->derecho = hijo;
+        }
+        // Actualizar el padre del hijo
+        if (hijo != nullptr) {
+            hijo->padre = padre;
+        }
+    // Caso 3: Si tiene dos hijos
+    } else {
+        // Encontrar el predecesor in-order (el nodo más a la derecha del subárbol izquierdo)
+        pNodo predecesorPadre = actual;
+        pNodo predecesor = actual->izquierdo;
+
+        while (predecesor->derecho != nullptr) {
+            predecesorPadre = predecesor;
+            predecesor = predecesor->derecho;
+        }
+        
+        // Reemplazar datos
+        actual->dato = predecesor->dato;
+
+        // Eliminar el predecesor
+        if (predecesorPadre != actual) {
+            predecesorPadre->derecho = predecesor->izquierdo;
+            if (predecesor->izquierdo != nullptr) {
+                predecesor->izquierdo->padre = predecesorPadre;
+            }
+        } else {
+            predecesorPadre->izquierdo = predecesor->izquierdo;
+            if (predecesor->izquierdo != nullptr) {
+                predecesor->izquierdo->padre = predecesorPadre;
+            }
+        }
+
+        // Ahora actual posee el nodo que vamos a eliminar
+        actual = predecesor;
+    }
+
+    // Liberar la memoria del nodo
+    delete actual;
+
+    // Equilibrar desde el padre del nodo eliminado
+    Equilibrar(a, padre, (padre != nullptr && padre->izquierdo == actual) ? IZQUIERDO : DERECHO, FALSE);
+}
+
+/* Funcion de busqueda: */
+int Buscar(Arbol raiz, int dat){
+
+    if (raiz == nullptr) {
+        cout << "\nNO SE ENCONTRO EL NUMERO" << endl;
+        return false;
+    } else if (raiz -> dato == dat) {
+        cout << "\nSE ENCONTRO EL dat" << endl;
+        return true;
+    } else if (dat < raiz -> dato) {
+        return Buscar(raiz -> izquierdo, dat);
+    } else {
+        return Buscar(raiz -> derecho, dat);
+    }
+}                 //~ aser
+
 int main() {
     Arbol ArbolInt = NULL;
     int opcion = 0;
@@ -119,6 +204,8 @@ int main() {
             case 3: //Eliminar numero
                 //void Borrar(Arbol* a, int dat);
                 cout << "Eliminando numero";
+                valor = obtenerNumeroValido("Ingrese nodo borrar> ");
+                Borrar(&ArbolInt, valor);
                 break;
             case 4: //modificar elemento (eliminar/ingresar)
                 cout << "Modificando elemento";
