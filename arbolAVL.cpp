@@ -21,21 +21,21 @@ typedef Nodo* pNodo;
 typedef Nodo* Arbol;
 
 /* Insertar en arbol ordenado: */
-void Insertar(Arbol* a, int dat);
+void Insertar(Arbol* a, int dat);             //~ list
 /* Borrar un elemento: */
-void Borrar(Arbol* a, int dat);
-/* Funcion de busqueda: */
-int Buscar(Arbol a, int dat);
-/* Comprobar si es un nodo hoja: */
-int EsHoja(pNodo r);
-/* Contar numero de nodos: */
-int NumeroNodos(Arbol a, int* c);
-/* Calcular la altura de un arbol: */
-int AlturaArbol(Arbol a, int* altura);
+void Borrar(Arbol* a, int dat);               //~ aser
+/* Funcion de busqueda: */ 
+int Buscar(Arbol a, int dat);                 //~ aser
+/* Comprobar si es un nodo hoja: */ 
+int EsHoja(pNodo r);                          //~aser nose
+/* Contar numero de nodos: */ 
+int NumeroNodos(Arbol a, int* c);             //~nose
+/* Calcular la altura de un arbol: */ 
+int AlturaArbol(Arbol a, int* altura);        //~nose
 /* Calcular altura de un dato: */
-int Altura(Arbol a, int dat);
+int Altura(Arbol a, int dat);                 //~nose
 /* Generar salida para Graphiz */
-void PreOrden(Arbol, std::ofstream &fp);
+void PreOrden(Arbol, std::ofstream &fp);      //~listo
 
 // Funciones de equilibrado:
 void Equilibrar(Arbol* raiz, pNodo nodo, int, int);
@@ -63,10 +63,22 @@ int main() {
         std::cin >> opcion;
 
         switch (opcion) {
-            case 1:
+            case 1: //ingreso numero
                 std::cout << "Ingrese su numero: ";
                 std::cin >> valor;
+                //void Insertar(Arbol* a, int dat);
                 Insertar(&ArbolInt, valor);
+                break;
+            case 2: //Busqueda numero
+                //int Buscar(Arbol a, int dat);
+                std::cout << "Buscando numero";
+                break;
+            case 3: //Eliminar numero
+                //void Borrar(Arbol* a, int dat);
+                std::cout << "Eliminando numero";
+                break;
+            case 4: //modificar elemento (eliminar/ingresar)
+                std::cout << "Modificando elemento";
                 break;
             case 5:
                 GenerarGrafo(ArbolInt);
@@ -93,7 +105,7 @@ void GenerarGrafo(Arbol ArbolInt) {
     fp.close();
 
     system("dot -Tpng -ografo.png grafo.txt");
-    system("eog grafo.png &");
+    system("start grafo.png &");
 }
 
 void MenuPrincipal() {
