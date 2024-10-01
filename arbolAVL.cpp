@@ -5,7 +5,7 @@
 
 #define TRUE 1
 #define FALSE 0
-
+using namespace std;
 enum {IZQUIERDO, DERECHO};
 
 
@@ -20,22 +20,63 @@ struct Nodo {
 typedef Nodo* pNodo;
 typedef Nodo* Arbol;
 
+// Función para validar que la entrada del usuario sea un entero
+int obtenerNumeroValido(const string& mensaje) {
+    string ingreso_usuario;
+    bool valid = false;
+    int numero = 0;
+
+    while (!valid) {
+        cout << mensaje;
+        cin >> ingreso_usuario;
+
+        try {
+            numero = stoi(ingreso_usuario);  // Intenta convertir la entrada a un entero
+            valid = true;  // Si la conversión es exitosa, salimos del bucle
+        }
+        catch (const invalid_argument& e) {
+            cout << "Entrada inválida, por favor ingresa un número entero válido.\n";
+        }
+        catch (const out_of_range& e) {
+            cout << "Número fuera de rango, intenta de nuevo.\n";
+        }
+    }
+
+    return numero;  // Devuelve el número entero validado
+}
+
+
 /* Insertar en arbol ordenado: */
-void Insertar(Arbol* a, int dat);             //~ list
+void Insertar(Arbol* raiz, int dat);             //~ list
 /* Borrar un elemento: */
-void Borrar(Arbol* a, int dat);               //~ aser
-/* Funcion de busqueda: */ 
-int Buscar(Arbol a, int dat);                 //~ aser
+void Borrar(Arbol* raiz, int dat);               //~ aser
+/* Funcion de busqueda: */
+
+int Buscar(Arbol raiz, int dat){
+
+    if (raiz == nullptr) {
+        cout << "\nNO SE ENCONTRO EL NUMERO" << endl;
+        return false;
+    } else if (raiz -> dato == dat) {
+        cout << "\nSE ENCONTRO EL dat" << endl;
+        return true;
+    } else if (dat < raiz -> dato) {
+        return Buscar(raiz -> izquierdo, dat);
+    } else {
+        return Buscar(raiz -> derecho, dat);
+    }
+}                 //~ aser
+
 /* Comprobar si es un nodo hoja: */ 
 int EsHoja(pNodo r);                          //~aser nose
 /* Contar numero de nodos: */ 
-int NumeroNodos(Arbol a, int* c);             //~nose
+int NumeroNodos(Arbol raiz, int* c);             //~nose
 /* Calcular la altura de un arbol: */ 
-int AlturaArbol(Arbol a, int* altura);        //~nose
+int AlturaArbol(Arbol raiz, int* altura);        //~nose
 /* Calcular altura de un dato: */
-int Altura(Arbol a, int dat);                 //~nose
+int Altura(Arbol raiz, int dat);                 //~nose
 /* Generar salida para Graphiz */
-void PreOrden(Arbol, std::ofstream &fp);      //~listo
+void PreOrden(Arbol, ofstream &fp);      //~listo
 
 // Funciones de equilibrado:
 void Equilibrar(Arbol* raiz, pNodo nodo, int, int);
@@ -59,26 +100,28 @@ int main() {
 
     while (opcion != 6) {
         MenuPrincipal();
-        std::cout << "Ingrese su opcion: ";
-        std::cin >> opcion;
+        cout << "Ingrese su opcion: ";
+        cin >> opcion;
 
         switch (opcion) {
             case 1: //ingreso numero
-                std::cout << "Ingrese su numero: ";
-                std::cin >> valor;
+                cout << "Ingrese su numero: ";
+                valor = obtenerNumeroValido("Ingrese el numero> ");
                 //void Insertar(Arbol* a, int dat);
                 Insertar(&ArbolInt, valor);
                 break;
             case 2: //Busqueda numero
                 //int Buscar(Arbol a, int dat);
-                std::cout << "Buscando numero";
+                //cout << "Buscando numero";
+                valor = obtenerNumeroValido("Ingrese el numero buscar> ");
+                Buscar(ArbolInt, valor);
                 break;
             case 3: //Eliminar numero
                 //void Borrar(Arbol* a, int dat);
-                std::cout << "Eliminando numero";
+                cout << "Eliminando numero";
                 break;
             case 4: //modificar elemento (eliminar/ingresar)
-                std::cout << "Modificando elemento";
+                cout << "Modificando elemento";
                 break;
             case 5:
                 GenerarGrafo(ArbolInt);
@@ -92,10 +135,10 @@ int main() {
 }
 
 void GenerarGrafo(Arbol ArbolInt) {
-    std::ofstream fp("grafo.txt");
+    ofstream fp("grafo.txt");
 
     fp << "digraph G {\n";
-    fp << "node [style=filled fillcolor=yellow];\n";
+    fp << "node [style=filled fillcolor=pink];\n";
 
     fp << "nullraiz [shape=point];\n";
     fp << "nullraiz->" << ArbolInt->dato << " [label=" << ArbolInt->FE << "];\n";
@@ -108,15 +151,46 @@ void GenerarGrafo(Arbol ArbolInt) {
     system("start grafo.png &");
 }
 
+void PreOrden(Arbol a, ofstream &fp) {
+    static int nullCount = 0;  // Para numerar los nodos nulos
+
+    if (a) {
+        // Escribir el nodo actual
+        fp << a->dato << " [style=filled fillcolor=pink];\n";
+
+        // Si el hijo izquierdo existe, agregar la arista
+        if (a->izquierdo) {
+            fp << a->dato << "->" << a->izquierdo->dato << " [label=" << a->FE << "];\n";
+            PreOrden(a->izquierdo, fp);
+        } else {
+            // Si no existe, agregar un nodo nulo
+            fp << "null" << nullCount << " [shape=point];\n";
+            fp << a->dato << "->null" << nullCount << ";\n";
+            nullCount++;
+        }
+
+        // Si el hijo derecho existe, agregar la arista
+        if (a->derecho) {
+            fp << a->dato << "->" << a->derecho->dato << " [label=" << a->FE << "];\n";
+            PreOrden(a->derecho, fp);
+        } else {
+            // Si no existe, agregar un nodo nulo
+            fp << "null" << nullCount << " [shape=point];\n";
+            fp << a->dato << "->null" << nullCount << ";\n";
+            nullCount++;
+        }
+    }
+}
+
 void MenuPrincipal() {
-    std::cout << "\n";
-    std::cout << "<1> Ingresar numero\n";
-    std::cout << "<2> Busqueda numero\n";
-    std::cout << "<3> Eliminar numero\n";
-    std::cout << "<4> Modificar elemento ingresado\n";
-    std::cout << "<5> Generar Grafo\n";
-    std::cout << "<6> Salir\n";
-    std::cout << "\n";
+    cout << "\n";
+    cout << "<1> Ingresar numero\n";
+    cout << "<2> Busqueda numero\n";
+    cout << "<3> Eliminar numero\n";
+    cout << "<4> Modificar elemento ingresado\n";
+    cout << "<5> Generar Grafo\n";
+    cout << "<6> Salir\n";
+    cout << "\n";
 }
 
 void Podar(Arbol* a) {
@@ -127,6 +201,9 @@ void Podar(Arbol* a) {
         *a = NULL;
     }
 }
+
+
+/**/
 
 void Insertar(Arbol* a, int dat) {
     pNodo padre = NULL;
@@ -141,8 +218,11 @@ void Insertar(Arbol* a, int dat) {
             actual = actual->derecho;
     }
 
-    if (actual != NULL)
+    //se imprime si ya se encuentra el nodo en el arbol
+    if (actual != NULL){
+        cout << "El nodo ya se encuentra en el árbol: " << dat << "\n";
         return;
+    }
 
     if (padre == NULL) {
         *a = new Nodo{dat, 0, NULL, NULL, NULL};
@@ -267,7 +347,7 @@ void RotaDerechaIzquierda(Arbol* a, pNodo nodo) {
 
     R->padre = Padre;
     P->padre = Q->padre = R;
-    if (B) B->padre = P;
+    if (B) B->padre = P;    
     if (C) C->padre = Q;
 
     switch (R->FE) {
@@ -335,18 +415,4 @@ void RotaDerechaDerecha(Arbol* a, pNodo nodo) {
 
     P->FE = 0;
     Q->FE = 0;
-}
-
-void PreOrden(Arbol a, std::ofstream &fp) {
-    if (a) {
-        fp << a->dato << ";\n";
-        if (a->izquierdo) {
-            fp << a->dato << "->" << a->izquierdo->dato << ";\n";
-            PreOrden(a->izquierdo, fp);
-        }
-        if (a->derecho) {
-            fp << a->dato << "->" << a->derecho->dato << ";\n";
-            PreOrden(a->derecho, fp);
-        }
-    }
 }
