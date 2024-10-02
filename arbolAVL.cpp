@@ -73,6 +73,60 @@ void auxAltura(Arbol a, int, int*);
 void MenuPrincipal();
 void GenerarGrafo(Arbol);
 
+void Modificar(Arbol a, int valor) {
+    // Recorrer el árbol y encontrar el valor que se quiera modificar
+    if (a == nullptr) {
+        cout << "\nNO SE ENCONTRO EL NUMERO" << endl;
+        return;
+    } else if (a->dato == valor) {
+        cout << "\nSE ENCONTRO EL dato: " << a->dato << endl;
+
+        // Determinar el rango de valores válidos
+        int minValor = INT_MIN; // Valor mínimo posible
+        int maxValor = INT_MAX; // Valor máximo posible
+
+        // Encontrar el valor máximo en el subárbol izquierdo
+        if (a->izquierdo != nullptr) {
+            pNodo temp = a->izquierdo;
+            while (temp->derecho != nullptr) {
+                temp = temp->derecho;
+            }
+            minValor = temp->dato; // Mínimo que puede tomar es el mayor del subárbol izquierdo
+        }
+
+        // Encontrar el valor mínimo en el subárbol derecho
+        if (a->derecho != nullptr) {
+            pNodo temp = a->derecho;
+            while (temp->izquierdo != nullptr) {
+                temp = temp->izquierdo;
+            }
+            maxValor = temp->dato; // Máximo que puede tomar es el menor del subárbol derecho
+        }
+
+        // Ajustar el rango para evitar conflictos
+        if (minValor == INT_MIN) {
+            minValor = valor; // Si no hay subárbol izquierdo, usamos el valor actual
+        } else {
+            minValor++; // Incrementar para evitar duplicados
+        }
+
+        if (maxValor == INT_MAX) {
+            maxValor = valor; // Si no hay subárbol derecho, usamos el valor actual
+        } else {
+            maxValor--; // Decrementar para evitar duplicados
+        }
+
+        // Mensaje al usuario
+        cout << "Ingrese un numero entre " << minValor << " y " << maxValor << ": ";
+        int valorNuevo = obtenerNumeroValido(""); // Llama a la función de validación
+
+        // Aquí puedes actualizar el valor del nodo
+        a->dato = valorNuevo;
+    }
+}
+
+
+
 // Función para calcular la altura de un nodo
 int altura(Nodo* nodo) {
     if (nodo == nullptr) {
@@ -234,6 +288,8 @@ int main() {
                 break;
             case 4: //modificar elemento (eliminar/ingresar)
                 cout << "Modificando elemento\n";
+                valor = obtenerNumeroValido("Ingresae nodo a modificar> ");
+                Modificar(ArbolInt, valor);
                 break;
             case 5:
                 GenerarGrafo(ArbolInt);
@@ -318,8 +374,6 @@ void Podar(Arbol* a) {
     }
 }
 
-
-/**/
 
 void Insertar(Arbol* a, int dat) {
     pNodo padre = NULL;
