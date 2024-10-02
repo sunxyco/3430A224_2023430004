@@ -6,12 +6,12 @@
 #define TRUE 1
 #define FALSE 0
 using namespace std;
-enum {IZQUIERDO, DERECHO};
 
+enum { IZQUIERDO, DERECHO };
 
 struct Nodo {
     int dato;
-    int FE;
+    int FE;  // Factor de Equilibrio
     Nodo* derecho;
     Nodo* izquierdo;
     Nodo* padre;
@@ -33,11 +33,9 @@ int obtenerNumeroValido(const string& mensaje) {
         try {
             numero = stoi(ingreso_usuario);  // Intenta convertir la entrada a un entero
             valid = true;  // Si la conversión es exitosa, salimos del bucle
-        }
-        catch (const invalid_argument& e) {
+        } catch (const invalid_argument& e) {
             cout << "Entrada inválida, por favor ingresa un número entero válido.\n";
-        }
-        catch (const out_of_range& e) {
+        } catch (const out_of_range& e) {
             cout << "Número fuera de rango, intenta de nuevo.\n";
         }
     }
@@ -45,22 +43,20 @@ int obtenerNumeroValido(const string& mensaje) {
     return numero;  // Devuelve el número entero validado
 }
 
-
 /* Insertar en arbol ordenado: */
-void Insertar(Arbol* raiz, int dat);             //~ list
+void Insertar(Arbol* raiz, int dat);
 /* Borrar un elemento: */
-
-
-/* Comprobar si es un nodo hoja: */ 
-int EsHoja(pNodo r);                          //~aser nose
-/* Contar numero de nodos: */ 
-int NumeroNodos(Arbol raiz, int* c);             //~nose
-/* Calcular la altura de un arbol: */ 
-int AlturaArbol(Arbol raiz, int* altura);        //~nose
+void Borrar(Arbol* raiz, int dat);
+/* Comprobar si es un nodo hoja: */
+int EsHoja(pNodo r);
+/* Contar numero de nodos: */
+int NumeroNodos(Arbol raiz, int* c);
+/* Calcular la altura de un arbol: */
+int AlturaArbol(Arbol raiz, int* altura);
 /* Calcular altura de un dato: */
-int Altura(Arbol raiz, int dat);                 //~nose
-/* Generar salida para Graphiz */
-void PreOrden(Arbol, ofstream &fp);      //~listo
+int Altura(Arbol raiz, int dat);
+/* Generar salida para Graphviz */
+void PreOrden(Arbol, ofstream &fp);
 
 // Funciones de equilibrado:
 void Equilibrar(Arbol* raiz, pNodo nodo, int, int);
@@ -77,106 +73,90 @@ void auxAltura(Arbol a, int, int*);
 void MenuPrincipal();
 void GenerarGrafo(Arbol);
 
+void Borrar(Arbol* raiz, int dat) {
+    pNodo nodo = *raiz;
 
-void Borrar(Arbol* a, int dato) {
-    pNodo padre = nullptr;
-    pNodo actual = *a;
-
-    // Buscar el nodo correspondiente al dato ingresado
-    while (actual != nullptr && dato != actual->dato) {
-        padre = actual;
-        if (dato < actual->dato) {
-            actual = actual->izquierdo;
-        } else {
-            actual = actual->derecho;
-        }
-    }
-
-    // Si no se encuentra el dato, se cierra el procedimiento
-    if (actual == nullptr) {
-        cout << "El dato no se encuentra en el árbol." << endl;
+    if (nodo == NULL) {
+        cout << "La información no se encuentra en el árbol" << endl;
         return;
     }
 
-    // Caso 1: Si el nodo es un nodo hoja
-    if (actual->izquierdo == nullptr && actual->derecho == nullptr) {
-        if (padre == nullptr) {
-            // Si es la raíz
-            *a = nullptr;
-        } else if (padre->izquierdo == actual) {
-            padre->izquierdo = nullptr;
-        } else {
-            padre->derecho = nullptr;
-        }
-    // Caso 2: Si tiene un solo hijo
-    } else if (actual->izquierdo == nullptr || actual->derecho == nullptr) {
-        pNodo hijo = (actual->izquierdo != nullptr) ? actual->izquierdo : actual->derecho;
-
-        if (padre == nullptr) {
-            // Si es la raíz
-            *a = hijo;
-        } else if (padre->izquierdo == actual) {
-            padre->izquierdo = hijo;
-        } else {
-            padre->derecho = hijo;
-        }
-        // Actualizar el padre del hijo
-        if (hijo != nullptr) {
-            hijo->padre = padre;
-        }
-    // Caso 3: Si tiene dos hijos
+    if (dat < nodo->dato) {
+        Borrar(&nodo->izquierdo, dat);
+        Equilibrar(raiz, nodo, IZQUIERDO, FALSE);
+    } else if (dat > nodo->dato) {
+        Borrar(&nodo->derecho, dat);
+        Equilibrar(raiz, nodo, DERECHO, FALSE);
     } else {
-        // Encontrar el predecesor in-order (el nodo más a la derecha del subárbol izquierdo)
-        pNodo predecesorPadre = actual;
-        pNodo predecesor = actual->izquierdo;
+        pNodo otro = nodo;
 
-        while (predecesor->derecho != nullptr) {
-            predecesorPadre = predecesor;
-            predecesor = predecesor->derecho;
-        }
-        
-        // Reemplazar datos
-        actual->dato = predecesor->dato;
+        if (otro->derecho == NULL) {
+            if (otro->padre == NULL) {
+                *raiz = otro->izquierdo;
+            } else if (otro->padre->izquierdo == otro) {
+                otro->padre->izquierdo = otro->izquierdo;
+            } else {
+                otro->padre->derecho = otro->izquierdo;
+            }
 
-        // Eliminar el predecesor
-        if (predecesorPadre != actual) {
-            predecesorPadre->derecho = predecesor->izquierdo;
-            if (predecesor->izquierdo != nullptr) {
-                predecesor->izquierdo->padre = predecesorPadre;
+            if (otro->izquierdo != NULL) {
+                otro->izquierdo->padre = otro->padre;
+            }
+        } else if (otro->izquierdo == NULL) {
+            if (otro->padre == NULL) {
+                *raiz = otro->derecho;
+            } else if (otro->padre->izquierdo == otro) {
+                otro->padre->izquierdo = otro->derecho;
+            } else {
+                otro->padre->derecho = otro->derecho;
+            }
+
+            if (otro->derecho != NULL) {
+                otro->derecho->padre = otro->padre;
             }
         } else {
-            predecesorPadre->izquierdo = predecesor->izquierdo;
-            if (predecesor->izquierdo != nullptr) {
-                predecesor->izquierdo->padre = predecesorPadre;
+            pNodo aux = otro->izquierdo;
+            bool boolFlag = FALSE;
+
+            while (aux->derecho != NULL) {
+                aux = aux->derecho;
+                boolFlag = TRUE;
             }
+
+            otro->dato = aux->dato;
+
+            if (aux->padre == otro) {
+                otro->izquierdo = aux->izquierdo;
+            } else {
+                aux->padre->derecho = aux->izquierdo;
+            }
+
+            if (aux->izquierdo != NULL) {
+                aux->izquierdo->padre = aux->padre;
+            }
+
+            otro = aux;
         }
 
-        // Ahora actual posee el nodo que vamos a eliminar
-        actual = predecesor;
+        free(otro);
+        Equilibrar(raiz, nodo, IZQUIERDO, TRUE);
     }
-
-    // Liberar la memoria del nodo
-    delete actual;
-
-    // Equilibrar desde el padre del nodo eliminado
-    Equilibrar(a, padre, (padre != nullptr && padre->izquierdo == actual) ? IZQUIERDO : DERECHO, FALSE);
 }
 
 /* Funcion de busqueda: */
-int Buscar(Arbol raiz, int dat){
-
+int Buscar(Arbol raiz, int dat) {
     if (raiz == nullptr) {
         cout << "\nNO SE ENCONTRO EL NUMERO" << endl;
-        return false;
-    } else if (raiz -> dato == dat) {
+        return FALSE;
+    } else if (raiz->dato == dat) {
         cout << "\nSE ENCONTRO EL dat" << endl;
-        return true;
-    } else if (dat < raiz -> dato) {
-        return Buscar(raiz -> izquierdo, dat);
+        return TRUE;
+    } else if (dat < raiz->dato) {
+        return Buscar(raiz->izquierdo, dat);
     } else {
-        return Buscar(raiz -> derecho, dat);
+        return Buscar(raiz->derecho, dat);
     }
-}                 //~ aser
+}
 
 int main() {
     Arbol ArbolInt = NULL;
@@ -192,23 +172,19 @@ int main() {
             case 1: //ingreso numero
                 cout << "Ingrese su numero: ";
                 valor = obtenerNumeroValido("Ingrese el numero> ");
-                //void Insertar(Arbol* a, int dat);
                 Insertar(&ArbolInt, valor);
                 break;
             case 2: //Busqueda numero
-                //int Buscar(Arbol a, int dat);
-                //cout << "Buscando numero";
                 valor = obtenerNumeroValido("Ingrese el numero buscar> ");
                 Buscar(ArbolInt, valor);
                 break;
             case 3: //Eliminar numero
-                //void Borrar(Arbol* a, int dat);
-                cout << "Eliminando numero";
+                cout << "Eliminando numero\n";
                 valor = obtenerNumeroValido("Ingrese nodo borrar> ");
                 Borrar(&ArbolInt, valor);
                 break;
             case 4: //modificar elemento (eliminar/ingresar)
-                cout << "Modificando elemento";
+                cout << "Modificando elemento\n";
                 break;
             case 5:
                 GenerarGrafo(ArbolInt);
@@ -227,9 +203,13 @@ void GenerarGrafo(Arbol ArbolInt) {
     fp << "digraph G {\n";
     fp << "node [style=filled fillcolor=pink];\n";
 
-    fp << "nullraiz [shape=point];\n";
-    fp << "nullraiz->" << ArbolInt->dato << " [label=" << ArbolInt->FE << "];\n";
-    PreOrden(ArbolInt, fp);
+    if (ArbolInt) {
+        fp << "nullraiz [shape=point];\n";
+        fp << "nullraiz->" << ArbolInt->dato << " [label=" << ArbolInt->FE << "];\n";
+        PreOrden(ArbolInt, fp);
+    } else {
+        cout << "El árbol está vacío. No se puede generar el gráfico.\n";
+    }
 
     fp << "}\n";
     fp.close();
@@ -247,7 +227,7 @@ void PreOrden(Arbol a, ofstream &fp) {
 
         // Si el hijo izquierdo existe, agregar la arista
         if (a->izquierdo) {
-            fp << a->dato << "->" << a->izquierdo->dato << " [label=" << a->FE << "];\n";
+            fp << a->dato << "->" << a->izquierdo->dato << " [label=" << a->izquierdo->FE << "];\n";
             PreOrden(a->izquierdo, fp);
         } else {
             // Si no existe, agregar un nodo nulo
@@ -258,7 +238,7 @@ void PreOrden(Arbol a, ofstream &fp) {
 
         // Si el hijo derecho existe, agregar la arista
         if (a->derecho) {
-            fp << a->dato << "->" << a->derecho->dato << " [label=" << a->FE << "];\n";
+            fp << a->dato << "->" << a->derecho->dato << " [label=" << a->derecho->FE << "];\n";
             PreOrden(a->derecho, fp);
         } else {
             // Si no existe, agregar un nodo nulo
@@ -407,6 +387,8 @@ void RotaIzquierdaDerecha(Arbol* raiz, pNodo nodo) {
     }
 
     R->FE = 0;
+    Q->FE = 0;
+    P->FE = 0;
 }
 
 void RotaDerechaIzquierda(Arbol* a, pNodo nodo) {
@@ -442,7 +424,10 @@ void RotaDerechaIzquierda(Arbol* a, pNodo nodo) {
         case 0: P->FE = 0; Q->FE = 0; break;
         case 1: P->FE = -1; Q->FE = 0; break;
     }
+
     R->FE = 0;
+    Q->FE = 0;
+    P->FE = 0;
 }
 
 void RotaIzquierdaIzquierda(Arbol* a, pNodo nodo) {
