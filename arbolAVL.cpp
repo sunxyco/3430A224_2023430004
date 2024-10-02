@@ -73,74 +73,123 @@ void auxAltura(Arbol a, int, int*);
 void MenuPrincipal();
 void GenerarGrafo(Arbol);
 
-void Borrar(Arbol* raiz, int dat) {
-    pNodo nodo = *raiz;
+// Función para calcular la altura de un nodo
+int altura(Nodo* nodo) {
+    if (nodo == nullptr) {
+        return 0;  // La altura de un nodo nulo es 0
+    }
+    int alturaIzquierda = altura(nodo->izquierdo);
+    int alturaDerecha = altura(nodo->derecho);
+    return 1 + std::max(alturaIzquierda, alturaDerecha);
+}
 
-    if (nodo == NULL) {
-        cout << "La información no se encuentra en el árbol" << endl;
+// Función para actualizar el FE de un nodo como FE = altura(derecho) - altura(izquierdo)
+void actualizarFe(Nodo* nodo) {
+    if (nodo != nullptr) {
+        int alturaIzquierda = altura(nodo->izquierdo);
+        int alturaDerecha = altura(nodo->derecho);
+        nodo->FE = alturaDerecha - alturaIzquierda;
+    }
+}
+
+// Función recursiva para actualizar los FE de todo el árbol
+void actualizarFeDesdeRaiz(Nodo* nodo) {
+    if (nodo == nullptr) {
         return;
     }
 
-    if (dat < nodo->dato) {
-        Borrar(&nodo->izquierdo, dat);
-        Equilibrar(raiz, nodo, IZQUIERDO, FALSE);
-    } else if (dat > nodo->dato) {
-        Borrar(&nodo->derecho, dat);
-        Equilibrar(raiz, nodo, DERECHO, FALSE);
-    } else {
-        pNodo otro = nodo;
+    // Actualizar el FE del nodo actual
+    actualizarFe(nodo);
 
-        if (otro->derecho == NULL) {
-            if (otro->padre == NULL) {
-                *raiz = otro->izquierdo;
-            } else if (otro->padre->izquierdo == otro) {
-                otro->padre->izquierdo = otro->izquierdo;
-            } else {
-                otro->padre->derecho = otro->izquierdo;
-            }
+    // Actualizar FE de los subárboles
+    actualizarFeDesdeRaiz(nodo->izquierdo);
+    actualizarFeDesdeRaiz(nodo->derecho);
+}
 
-            if (otro->izquierdo != NULL) {
-                otro->izquierdo->padre = otro->padre;
-            }
-        } else if (otro->izquierdo == NULL) {
-            if (otro->padre == NULL) {
-                *raiz = otro->derecho;
-            } else if (otro->padre->izquierdo == otro) {
-                otro->padre->izquierdo = otro->derecho;
-            } else {
-                otro->padre->derecho = otro->derecho;
-            }
+void Borrar(Arbol* a, int dato) {
+    pNodo padre = nullptr;
+    pNodo actual = *a;
 
-            if (otro->derecho != NULL) {
-                otro->derecho->padre = otro->padre;
-            }
+    // Buscar el nodo correspondiente al número ingresado
+    while (actual != nullptr && dato != actual->dato) {
+        padre = actual;
+        if (dato < actual->dato) {
+            actual = actual->izquierdo;
         } else {
-            pNodo aux = otro->izquierdo;
-            bool boolFlag = FALSE;
+            actual = actual->derecho;
+        }
+    }
 
-            while (aux->derecho != NULL) {
-                aux = aux->derecho;
-                boolFlag = TRUE;
-            }
+    // Si no se encuentra el dato, se cierra el procedimiento
+    if (actual == nullptr) {
+        return;
+    }
 
-            otro->dato = aux->dato;
-
-            if (aux->padre == otro) {
-                otro->izquierdo = aux->izquierdo;
-            } else {
-                aux->padre->derecho = aux->izquierdo;
-            }
-
-            if (aux->izquierdo != NULL) {
-                aux->izquierdo->padre = aux->padre;
-            }
-
-            otro = aux;
+    // Caso 1: Si el nodo es un nodo hoja
+    if (actual->izquierdo == nullptr && actual->derecho == nullptr) {
+        if (padre == nullptr) {
+            // Si es la raíz
+            *a = nullptr;
+        } else if (padre->izquierdo == actual) {
+            padre->izquierdo = nullptr;
+        } else {
+            padre->derecho = nullptr;
         }
 
-        free(otro);
-        Equilibrar(raiz, nodo, IZQUIERDO, TRUE);
+    // Caso 2: Si tiene un hijo
+    } else if (actual->izquierdo == nullptr || actual->derecho == nullptr) {
+        pNodo hijo = (actual->izquierdo != nullptr) ? actual->izquierdo : actual->derecho;
+
+        if (padre == nullptr) {
+            // Si es la raíz
+            *a = hijo;
+        } else if (padre->izquierdo == actual) {
+            padre->izquierdo = hijo;
+        } else {
+            padre->derecho = hijo;
+        }
+        // Actualizar el padre del hijo
+        hijo->padre = padre;
+    
+    // Caso 3: Si tiene dos hijos
+    } else {
+        // Encontrar el predecesor inOrden (el nodo más a la derecha del subárbol izquierdo)
+        pNodo predecesorPadre = actual;
+        pNodo predecesor = actual->izquierdo;
+
+        while (predecesor->derecho != nullptr) {
+            predecesorPadre = predecesor;
+            predecesor = predecesor->derecho;
+        }
+
+        // Reemplazar datos
+        actual->dato = predecesor->dato;
+
+        // Eliminar el predecesor
+        if (predecesorPadre != actual) {
+            predecesorPadre->derecho = predecesor->izquierdo;
+            if (predecesor->izquierdo != nullptr) {
+                predecesor->izquierdo->padre = predecesorPadre;
+            }
+        } else {
+            predecesorPadre->izquierdo = predecesor->izquierdo;
+            if (predecesor->izquierdo != nullptr) {
+                predecesor->izquierdo->padre = predecesorPadre;
+            }
+        }
+
+        // Ahora actual posee el nodo que vamos a eliminar
+        actual = predecesor;
     }
+
+    // Después de eliminar un nodo, actualizar todos los FE del árbol
+    actualizarFeDesdeRaiz(*a);
+
+    // Liberar la memoria del nodo
+    delete actual;
+
+    // Equilibrar desde el padre del nodo eliminado
+    Equilibrar(a, padre, (padre != nullptr && padre->izquierdo == actual) ? IZQUIERDO : DERECHO, FALSE);
 }
 
 /* Funcion de busqueda: */
@@ -387,8 +436,6 @@ void RotaIzquierdaDerecha(Arbol* raiz, pNodo nodo) {
     }
 
     R->FE = 0;
-    Q->FE = 0;
-    P->FE = 0;
 }
 
 void RotaDerechaIzquierda(Arbol* a, pNodo nodo) {
@@ -416,7 +463,7 @@ void RotaDerechaIzquierda(Arbol* a, pNodo nodo) {
 
     R->padre = Padre;
     P->padre = Q->padre = R;
-    if (B) B->padre = P;    
+    if (B) B->padre = P;
     if (C) C->padre = Q;
 
     switch (R->FE) {
@@ -424,10 +471,7 @@ void RotaDerechaIzquierda(Arbol* a, pNodo nodo) {
         case 0: P->FE = 0; Q->FE = 0; break;
         case 1: P->FE = -1; Q->FE = 0; break;
     }
-
     R->FE = 0;
-    Q->FE = 0;
-    P->FE = 0;
 }
 
 void RotaIzquierdaIzquierda(Arbol* a, pNodo nodo) {
