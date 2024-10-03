@@ -275,11 +275,6 @@ int main() {
     int opcion = 0;
     int valor;
 
-    for (int i = 1; i <= 15; i++) {
-        Insertar(&ArbolInt, i);
-    }
-    
-
     while (opcion != 6) {
         MenuPrincipal();
         cout << "Ingrese su opcion: ";
@@ -308,6 +303,12 @@ int main() {
                 break;
             case 5:
                 GenerarGrafo(ArbolInt);
+                break;
+            case 6: // Salir
+                cout << "Saliendo del programa...\n";
+                break;
+            default: // Opción inválida
+                cout << "Entrada mal ingresada, por favor intente de nuevo.\n";
                 break;
         }
     }
