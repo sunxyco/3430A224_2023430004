@@ -74,7 +74,6 @@ void MenuPrincipal();
 void GenerarGrafo(Arbol);
 
 void Modificar(Arbol a, int valor) {
-    // Recorrer el árbol y encontrar el valor que se quiera modificar
     if (a == nullptr) {
         cout << "\nNO SE ENCONTRO EL NUMERO" << endl;
         return;
@@ -82,8 +81,8 @@ void Modificar(Arbol a, int valor) {
         cout << "\nSE ENCONTRO EL dato: " << a->dato << endl;
 
         // Determinar el rango de valores válidos
-        int minValor = INT_MIN; // Valor mínimo posible
-        int maxValor = INT_MAX; // Valor máximo posible
+        int minValor = INT_MIN;
+        int maxValor = INT_MAX;
 
         // Encontrar el valor máximo en el subárbol izquierdo
         if (a->izquierdo != nullptr) {
@@ -91,7 +90,7 @@ void Modificar(Arbol a, int valor) {
             while (temp->derecho != nullptr) {
                 temp = temp->derecho;
             }
-            minValor = temp->dato; // Mínimo que puede tomar es el mayor del subárbol izquierdo
+            minValor = temp->dato; 
         }
 
         // Encontrar el valor mínimo en el subárbol derecho
@@ -100,28 +99,30 @@ void Modificar(Arbol a, int valor) {
             while (temp->izquierdo != nullptr) {
                 temp = temp->izquierdo;
             }
-            maxValor = temp->dato; // Máximo que puede tomar es el menor del subárbol derecho
+            maxValor = temp->dato;
         }
 
         // Ajustar el rango para evitar conflictos
-        if (minValor == INT_MIN) {
-            minValor = valor; // Si no hay subárbol izquierdo, usamos el valor actual
-        } else {
-            minValor++; // Incrementar para evitar duplicados
+        if (minValor != INT_MIN) {
+            minValor++; 
         }
-
-        if (maxValor == INT_MAX) {
-            maxValor = valor; // Si no hay subárbol derecho, usamos el valor actual
-        } else {
-            maxValor--; // Decrementar para evitar duplicados
+        if (maxValor != INT_MAX) {
+            maxValor--; 
         }
 
         // Mensaje al usuario
         cout << "Ingrese un numero entre " << minValor << " y " << maxValor << ": ";
-        int valorNuevo = obtenerNumeroValido(""); // Llama a la función de validación
+        int valorNuevo = obtenerNumeroValido(""); 
 
         // Aquí puedes actualizar el valor del nodo
         a->dato = valorNuevo;
+
+        // Actualizar los FE
+        //actualizarFeDesdeRaiz(a);
+    } else if (valor < a->dato) {
+        Modificar(a->izquierdo, valor);
+    } else {
+        Modificar(a->derecho, valor);
     }
 }
 
@@ -164,7 +165,7 @@ void Borrar(Arbol* a, int dato) {
     pNodo padre = nullptr;
     pNodo actual = *a;
 
-    // Buscar el nodo correspondiente al número ingresado
+    // Buscar el nodo correspondiente al dato
     while (actual != nullptr && dato != actual->dato) {
         padre = actual;
         if (dato < actual->dato) {
@@ -174,12 +175,12 @@ void Borrar(Arbol* a, int dato) {
         }
     }
 
-    // Si no se encuentra el dato, se cierra el procedimiento
+    // Si no se encuentra el dato
     if (actual == nullptr) {
         return;
     }
 
-    // Caso 1: Si el nodo es un nodo hoja
+    // Caso 1: Si es un nodo hoja
     if (actual->izquierdo == nullptr && actual->derecho == nullptr) {
         if (padre == nullptr) {
             // Si es la raíz
@@ -190,7 +191,7 @@ void Borrar(Arbol* a, int dato) {
             padre->derecho = nullptr;
         }
 
-    // Caso 2: Si tiene un hijo
+    // Caso 2: Si tiene un solo hijo
     } else if (actual->izquierdo == nullptr || actual->derecho == nullptr) {
         pNodo hijo = (actual->izquierdo != nullptr) ? actual->izquierdo : actual->derecho;
 
@@ -204,10 +205,10 @@ void Borrar(Arbol* a, int dato) {
         }
         // Actualizar el padre del hijo
         hijo->padre = padre;
-    
+
     // Caso 3: Si tiene dos hijos
     } else {
-        // Encontrar el predecesor inOrden (el nodo más a la derecha del subárbol izquierdo)
+        // Encontrar el predecesor inOrden (nodo más grande del subárbol izquierdo)
         pNodo predecesorPadre = actual;
         pNodo predecesor = actual->izquierdo;
 
@@ -216,7 +217,7 @@ void Borrar(Arbol* a, int dato) {
             predecesor = predecesor->derecho;
         }
 
-        // Reemplazar datos
+        // Reemplazar los datos del nodo actual con el predecesor
         actual->dato = predecesor->dato;
 
         // Eliminar el predecesor
@@ -232,19 +233,27 @@ void Borrar(Arbol* a, int dato) {
             }
         }
 
-        // Ahora actual posee el nodo que vamos a eliminar
+        // Ahora actual debe referirse al nodo a eliminar (predecesor)
         actual = predecesor;
     }
 
-    // Después de eliminar un nodo, actualizar todos los FE del árbol
+    // Actualizar la raíz del árbol si el nodo eliminado era la raíz
+    if (padre == nullptr && actual == *a) {
+        *a = actual->izquierdo != nullptr ? actual->izquierdo : actual->derecho;
+    }
+
+    // Actualizar FE del árbol
     actualizarFeDesdeRaiz(*a);
 
     // Liberar la memoria del nodo
     delete actual;
 
-    // Equilibrar desde el padre del nodo eliminado
-    Equilibrar(a, padre, (padre != nullptr && padre->izquierdo == actual) ? IZQUIERDO : DERECHO, FALSE);
+    // Equilibrar el árbol
+    if (padre) {
+        Equilibrar(a, padre, (padre->izquierdo == actual) ? IZQUIERDO : DERECHO, FALSE);
+    }
 }
+
 
 /* Funcion de busqueda: */
 int Buscar(Arbol raiz, int dat) {
@@ -266,10 +275,16 @@ int main() {
     int opcion = 0;
     int valor;
 
+    for (int i = 1; i <= 15; i++) {
+        Insertar(&ArbolInt, i);
+    }
+    
+
     while (opcion != 6) {
         MenuPrincipal();
         cout << "Ingrese su opcion: ";
         cin >> opcion;
+
 
         switch (opcion) {
             case 1: //ingreso numero
