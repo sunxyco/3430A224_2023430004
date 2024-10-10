@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
+#include <fstream>
+#include <cstdlib> // para system
 using namespace std;
 
 #define TRUE 0
@@ -21,29 +23,30 @@ int calcular_minimo(int dw, int dv, int mvw);
 void imprimir_vector_caracter(char vector[N], char *);
 void imprimir_vector_entero(int vector[N]);
 void imprimir_matriz(int matriz[N][N]);
-//void imprimir_grafo(int matriz[N][N], char vector[N]);
+void mostrar_arreglo_D(int D[N]);
+void imprimir_grafo(int matriz[N][N], char vector[N]);
 
 int main(int argc, char **argv) {
     char V[N], S[N], VS[N];
     int D[N];
 
     // Valores de prueba 1.
-    int M[N][N] = {
+    /*int M[N][N] = {
         { 0,  4, 11, -1, -1},
         {-1,  0, -1,  6,  2},
         {-1,  3,  0,  6, -1},
         {-1, -1, -1,  0, -1},
         {-1, -1,  5,  3,  0}
-    };
+    };*/
   
     // Valores de prueba 2.
-    /*int M[N][N] = {
+    int M[N][N] = {
         { 0, 2,  1, -1,  3},
         {-1, 0, -1,  4, -1},
         {-1, 1,  0, -1,  1},
         { 1,-1,  3,  0,  5},
         {-1,-1, -1, -1, 0}
-    };*/
+    };
 
     // Inicializa los vectores de caracteres.
     inicializar_vector_caracter(V);
@@ -57,9 +60,21 @@ int main(int argc, char **argv) {
     aplicar_dijkstra(V, S, VS, D, M);
 
     // Imprimir el grafo (opcional).
-    // imprimir_grafo(M, V);
+    imprimir_grafo(M, V);
+
+    mostrar_arreglo_D(D);
 
     return 0;
+}
+
+void mostrar_arreglo_D(int D[N]) {
+    // Bucle for basado en rango para imprimir cada elemento
+
+    cout << "Arreglo D-> ";
+
+    for (int i = 0; i < N; i++) 
+    cout << "  " << D[i];
+    
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -312,31 +327,34 @@ void imprimir_matriz(int matriz[N][N]) {
 
 // genera y muestra apartir de una matriz bidimensional de enteros
 // el grafo correspondiente.
-/*
-void imprimir_grafo(int matriz[N][N], char vector[N]) {
-  int i, j;
-  FILE *fp;
-  
-  fp = fopen("grafo.txt", "w");
-  fprintf(fp, "%s\n", "digraph G {");
-  fprintf(fp, "%s\n", "graph [rankdir=LR]");
-  fprintf(fp, "%s\n", "node [style=filled fillcolor=yellow];");
-  
-  for (i=0; i<N; i++) {
-    for (j=0; j<N; j++) {
-      // evalua la diagonal principal.
-      if (i != j) {
-        if (matriz[i][j] > 0) {
-          fprintf(fp, "%c%s%c [label=%d];\n", vector[i],"->", vector[j], matriz[i][j]);
-        }
-      }
-    }
-  }
-  
-  fprintf(fp, "%s\n", "}");
-  fclose(fp);
 
-  system("dot -Tpng -ografo.png grafo.txt");
-  system("start grafo.png &");
+
+void imprimir_grafo(int matriz[N][N], char vector[N]) {
+    ofstream archivo("grafo.txt");
+
+    if (archivo.is_open()) {
+        archivo << "digraph G {\n";
+        archivo << "graph [rankdir=LR]\n";
+        archivo << "node [style=filled fillcolor=yellow];\n";
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                // Evalúa la diagonal principal.
+                if (i != j && matriz[i][j] > 0) {
+                    archivo << vector[i] << "->" << vector[j] 
+                            << " [label=" << matriz[i][j] << "];\n";
+                }
+            }
+        }
+
+        archivo << "}\n";
+        archivo.close();
+    } else {
+        std::cerr << "No se pudo abrir el archivo.\n";
+        return;
+    }
+
+    // Ejecutar comandos del sistema para generar la imagen y abrirla
+    system("dot -Tpng -ografo.png grafo.txt");
+    system("grafo.png &"); // En Windows usa 'start', en Linux usa 'xdg-open' o 'open' en Mac
 }
-*/
