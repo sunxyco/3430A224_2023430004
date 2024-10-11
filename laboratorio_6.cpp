@@ -3,6 +3,8 @@
  */
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
+#include <cstdlib> // para system
 using namespace std;
 
 // Función para validar que la entrada del usuario sea un entero
@@ -128,6 +130,45 @@ void generar_conexiones(int **matriz, int n){
     }
 }
 
+void imprimir_grafo(int **matriz, string *vector, int n) {
+    ofstream archivo("grafo.txt");
+
+    if (archivo.is_open()) {
+        archivo << "digraph G {\n";
+        archivo << "graph [rankdir=LR]\n";
+        archivo << "node [style=filled fillcolor=yellow];\n";
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                // Evalúa la diagonal principal.
+                if (i != j && matriz[i][j] > 0) {
+                    archivo << vector[i] << "->" << vector[j] 
+                            << " [label=" << matriz[i][j] << "];\n";
+                }
+            }
+        }
+
+        archivo << "}\n";
+        archivo.close();
+    } else {
+        cerr << "No se pudo abrir el archivo.\n";
+        return;
+    }
+
+    // Ejecutar comandos del sistema para generar la imagen y abrirla
+    system("dot -Tpng -ografo.png grafo.txt");
+    system("grafo.png &"); // En Windows usa 'start', en Linux usa 'xdg-open' o 'open' en Mac
+}
+
+// Inicializa utilizando código ASCII.
+void leer_nodos(string *vector, int n) {
+    int inicio = 97;
+  
+    for (int i = 0; i < n; i++) {
+        vector[i] = inicio + i;
+    }
+}
+
 //
 int main(int argc, char **argv) {
     // número de elementos.
@@ -145,9 +186,8 @@ int main(int argc, char **argv) {
     inicializar_vector_caracter(S, n);
     inicializar_vector_caracter(VS, n);
   
-    // Lee nodos.
-    //leer_nodos(V);
-
+    // Lee nodos ~ agrega letras a los nodos de V
+    leer_nodos(V, n);
 
     int **matriz = inicializar_matriz_1(argc, argv, n);
 
@@ -160,5 +200,12 @@ int main(int argc, char **argv) {
     cout << "matriz actual";
     imprimir_matriz(matriz, n);
 
+    //agregar algoritmo de distrak
+
+
+    //imprimir grafo
+    imprimir_grafo(matriz, V, n);
+
     return 0;
 }
+

@@ -31,22 +31,22 @@ int main(int argc, char **argv) {
     int D[N];
 
     // Valores de prueba 1.
-    /*int M[N][N] = {
+    int M[N][N] = {
         { 0,  4, 11, -1, -1},
         {-1,  0, -1,  6,  2},
         {-1,  3,  0,  6, -1},
         {-1, -1, -1,  0, -1},
         {-1, -1,  5,  3,  0}
-    };*/
+    };
   
     // Valores de prueba 2.
-    int M[N][N] = {
+    /*int M[N][N] = {
         { 0, 2,  1, -1,  3},
         {-1, 0, -1,  4, -1},
         {-1, 1,  0, -1,  1},
         { 1,-1,  3,  0,  5},
         {-1,-1, -1, -1, 0}
-    };
+    };*/
 
     // Inicializa los vectores de caracteres.
     inicializar_vector_caracter(V);
