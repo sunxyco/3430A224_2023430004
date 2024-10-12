@@ -7,6 +7,16 @@
 #include <cstdlib> // para system
 using namespace std;
 
+// Inicializa utilizando código ASCII.
+void leer_nodos(string *vector, int n) {
+    int inicio = 97;
+  
+    for (int i = 0; i < n; i++) {
+        vector[i] = inicio + i;
+    }
+}
+
+
 // Función para validar que la entrada del usuario sea un entero
 int obtenerNumeroValido(const string& mensaje) {
     string ingreso_usuario;
@@ -51,7 +61,7 @@ void inicializar_vector_caracter (string *vector, int n) {
 void imprimir_vector_caracter(string *vector, int n) {
     cout << endl;
     for (int i=0; i<n; i++) {
-        cout << "vector[" << i << "]: " << vector[i] << " ";
+        cout << "vector[" << i << "]: " << vector[i] << " ~ ";
     }
     cout << endl;
 }
@@ -88,8 +98,13 @@ int **inicializar_matriz_1(int argc, char **argv, int n){
     //
     string V[n];
 
+
     // inicializa e imprime vectores. - que vectores hay en la matriz
     inicializar_vector_caracter(V, n);
+
+    // Lee nodos ~ agrega letras a los nodos de V
+    leer_nodos(V, n);
+
     imprimir_vector_caracter(V, n);
 
     // crea matriz nxn de enteros.
@@ -160,15 +175,6 @@ void imprimir_grafo(int **matriz, string *vector, int n) {
     system("grafo.png &"); // En Windows usa 'start', en Linux usa 'xdg-open' o 'open' en Mac
 }
 
-// Inicializa utilizando código ASCII.
-void leer_nodos(string *vector, int n) {
-    int inicio = 97;
-  
-    for (int i = 0; i < n; i++) {
-        vector[i] = inicio + i;
-    }
-}
-
 //
 int main(int argc, char **argv) {
     // número de elementos.
@@ -194,14 +200,18 @@ int main(int argc, char **argv) {
     inicializar_matriz_enteros(matriz, n);
     imprimir_matriz(matriz, n);
 
-    //generar conexiones de los nodos atraves de la matriz de prosimidad
+    //generar conexiones de los nodos atraves de la matriz de prosimidad ~ donde se le piden al usuario los pesos entre nodos
     generar_conexiones(matriz, n);
 
     cout << "matriz actual";
+
+    //imprimir vectores caracteres
+    imprimir_vector_caracter(V, n);
     imprimir_matriz(matriz, n);
 
     //agregar algoritmo de distrak
-
+    // Aplica el algoritmo de Dijkstra.
+    //aplicar_dijkstra(V, S, VS, D, M);
 
     //imprimir grafo
     imprimir_grafo(matriz, V, n);
