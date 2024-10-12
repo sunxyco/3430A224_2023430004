@@ -9,7 +9,7 @@ using namespace std;
 
 // Inicializa utilizando código ASCII.
 void leer_nodos(string *vector, int n) {
-    int inicio = 97;
+    int inicio = 65;
   
     for (int i = 0; i < n; i++) {
         vector[i] = inicio + i;
@@ -115,7 +115,7 @@ int **inicializar_matriz_1(int argc, char **argv, int n){
     return matriz;
 }
 
-void generar_conexiones(int **matriz, int n){
+void generar_conexiones(int **matriz, int n, string *vector_v){
     //suponiendo que es 3x3, preguntar, el vector 
     //a que conexion tiene con b-c
     //b que conexion tiene con a-c
@@ -133,7 +133,7 @@ void generar_conexiones(int **matriz, int n){
             //cout << "subiteracion " << i + 1 << "\n";
             if (i != j){
 
-                cout << "ingrese el peso entre el nodo" << i << " y nodo" << j << "> ";
+                cout << "ingrese el peso entre el nodo[" << vector_v[i] << "] ~ nodo[" << vector_v[j] << "] > ";
                 ingreso = obtenerNumeroValido("");
 
                 matriz[i][j] = ingreso;
@@ -417,7 +417,7 @@ int main(int argc, char **argv) {
     imprimir_matriz(matriz, n);
 
     //generar conexiones de los nodos atraves de la matriz de prosimidad ~ donde se le piden al usuario los pesos entre nodos
-    generar_conexiones(matriz, n);
+    generar_conexiones(matriz, n, V);
 
     cout << "matriz actual";
 
