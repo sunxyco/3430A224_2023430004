@@ -16,7 +16,6 @@ void leer_nodos(string *vector, int n) {
     }
 }
 
-
 // Función para validar que la entrada del usuario sea un entero
 int obtenerNumeroValido(const string& mensaje) {
     string ingreso_usuario;
@@ -194,10 +193,145 @@ void imprimir_vector_entero(int *vector, int n) {
     cout << "\n";
 }
 
+// agrega vértice a S[].
+void agrega_vertice_a_S(string *vector_s, string vertice, int n) {
+    int i;
+
+    // Recorre buscando un espacio vacío.
+    for (i = 0; i < n; i++) {
+        if (vector_s[i] == " ") {
+            vector_s[i] = vertice;
+            return;
+        }
+    }  
+}
+
+// Busca la aparición de un carácter en un vector de caracteres.
+int busca_caracter(string c, string *vector, int n) {
+    int j;
+  
+    for (j = 0; j < n; j++) {
+        if (c == vector[j]) {
+            return true;
+        }
+    }
+  
+    return false;
+}
+
+// Actualiza VS[] cada vez que se agrega un elemento a S[].
+void actualizar_VS(string *vector_v, string *vector_s, string *vector_vs, int n) {
+    int j;
+    int k = 0;
+  
+    inicializar_vector_caracter(vector_vs, n);
+  
+    for (j = 0; j < n; j++) {
+        // Por cada carácter de V[], evalúa si está en S[],
+        // si no está, lo agrega a VS[].
+        if (busca_caracter(vector_v[j], vector_s, n) != true) {
+            vector_vs[k] = vector_v[j];
+            k++;
+        }
+    }
+}
+
+// Retorna el índice del carácter consultado.
+int buscar_indice_caracter(string *vector_v, string caracter, int n) {
+    int i;
+  
+    for (i = 0; i < n; i++) {
+        if (vector_v[i] == caracter) {
+            return i;
+        }
+    }
+  
+    return i; // Si no se encuentra, retorna N (o el valor de i).
+}
+
+// elige vértice con menor peso en VS[].
+// busca su peso en D[].
+string elegir_vertice(string *vector_vs, int *vector_D, string *vector_V, int n) {
+    int i = 0;
+    int menor = -1;
+    int peso;
+    string vertice;
+
+    while (vector_vs[i] != " ") {
+        peso = vector_D[buscar_indice_caracter(vector_V, vector_vs[i], n)];
+
+        // Descarta valores infinitos (-1) y 0.
+        if ((peso != -1) && (peso != 0)) {
+            if (i == 0) {
+                menor = peso;
+                vertice = vector_vs[i];
+            } else {
+                if (peso < menor) {
+                    menor = peso;
+                    vertice = vector_vs[i];
+                }
+            }
+        }
+
+        i++;
+    }
+
+    // printf("\nvertice: %c\n\n", vertice);
+    cout << "\nvertice: " << vertice << "\n\n";
+    return vertice;
+}
+
+//
+int calcular_minimo(int dw, int dv, int mvw) {
+
+    int min = 0;
+
+    // Comprobación de condiciones
+    if (dw == -1) {
+        if (dv != -1 && mvw != -1) {
+            min = dv + mvw;
+        } else {
+            min = -1;
+        }
+    } else {
+        if (dv != -1 && mvw != -1) {
+            if (dw <= (dv + mvw)) {
+                min = dw;
+            } else {
+                min = (dv + mvw);
+            }
+        } else {
+            min = dw;
+        }
+    }
+
+    //printf("dw: %d dv: %d mvw: %d min: %d\n", dw, dv, mvw, min);
+    cout << "dw: " << dw << " dv: " << " mvw: " << mvw << "min: " << min << " \n";
+
+    return min; 
+}
+
+// 
+void actualizar_pesos(int *D, string *VS, int **M, string *V, string v, int n) {
+    int i = 0;
+    int indice_w, indice_v;
+
+    cout << "\n> Actualiza pesos en D[]\n";
+  
+    indice_v = buscar_indice_caracter(V, v, n);
+    while (VS[i] != " ") {
+        if (VS[i] != v) {
+            indice_w = buscar_indice_caracter(V, VS[i], n);
+            D[indice_w] = calcular_minimo(D[indice_w], D[indice_v], M[indice_v][indice_w]);
+        }
+        i++;
+    }
+}
+
 // aplica el algoritmo.
 void aplicar_dijkstra(string *vector_V, string *vector_S, string *vector_VS, int *vector_D, int **matriz, int n) {
     int i;
-    int v;
+    string v;
 
     // Inicializar vector D[] según datos de la matriz M[][] 
     // Estado inicial.
@@ -210,39 +344,52 @@ void aplicar_dijkstra(string *vector_V, string *vector_S, string *vector_VS, int
     imprimir_vector_caracter(vector_VS, n);
     imprimir_vector_entero(vector_D, n);
     cout << "------------------------------------------------------------------\n\n";
-    /*
+
     // Agrega primer vértice.
     cout << "> Agrega primer valor V[0] a S[] y actualiza VS[]\n\n";
-    agrega_vertice_a_S(S, V[0]);
-    imprimir_vector_caracter(S, n);
+    agrega_vertice_a_S(vector_S, vector_V[0], n);
+    imprimir_vector_caracter(vector_S, n);
 
     // Actualiza VS[]
-    actualizar_VS(V, S, VS);
-    imprimir_vector_caracter(VS, n);
-    imprimir_vector_entero(D, n);
+    actualizar_VS(vector_V, vector_S, vector_VS, n);
+
+    imprimir_vector_caracter(vector_VS, n);
+    imprimir_vector_entero(vector_D, n);
 
     // Bucle principal para aplicar el algoritmo de Dijkstra
-    for (i = 1; i < N; i++) {
+    for (i = 1; i < n; i++) {
         // Elige un vértice en v de VS[] tal que D[v] sea el mínimo
         cout << "\n> Elige vértice menor en VS[] según valores en D[]\n";
         cout << "> Lo agrega a S[] y actualiza VS[]\n";
-        v = elegir_vertice(VS, D, V);
+
+        v = elegir_vertice(vector_VS, vector_D, vector_V, n);
 
         // Agrega el vértice a S[]
-        agrega_vertice_a_S(S, v);
-        imprimir_vector_caracter(S, n);
+        agrega_vertice_a_S(vector_S, v, n);
+        imprimir_vector_caracter(vector_S, n);
 
         // Actualiza VS[]
-        actualizar_VS(V, S, VS);
-        imprimir_vector_caracter(VS, n);
+        actualizar_VS(vector_V, vector_S, vector_VS, n);
+        imprimir_vector_caracter(vector_VS, n);
 
+    
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // Actualiza pesos
-        actualizar_pesos(D, VS, M, V, v);
-        imprimir_vector_entero(D, n);
+        actualizar_pesos(vector_D, vector_VS, matriz, vector_V, v, n);
+        imprimir_vector_entero(vector_D, n);
     }
-    */
+    
 }
 
+void mostrar_arreglo_D(int *D, int n) {
+    // Bucle for basado en rango para imprimir cada elemento
+
+    cout << "Arreglo D-> ";
+
+    for (int i = 0; i < n; i++) 
+    cout << "  " << D[i];
+    
+}
 
 //
 int main(int argc, char **argv) {
@@ -284,6 +431,8 @@ int main(int argc, char **argv) {
     //como no esta definido el n, hay que ingresarlo aparte para que funciones X
     aplicar_dijkstra(V, S, VS, D, matriz, n);
     //(string *vector_V, string *vector_S, string *vector_VS, int *vector_D, int **matriz, int n)
+
+    mostrar_arreglo_D(D, n);
 
     //imprimir grafo
     imprimir_grafo(matriz, V, n);
