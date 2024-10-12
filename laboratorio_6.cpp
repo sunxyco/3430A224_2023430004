@@ -175,6 +175,75 @@ void imprimir_grafo(int **matriz, string *vector, int n) {
     system("grafo.png &"); // En Windows usa 'start', en Linux usa 'xdg-open' o 'open' en Mac
 }
 
+// Copia contenido inicial a D[] desde la matriz M[][].
+void inicializar_vector_D(int *vector_D, int **matriz, int n) {
+    int col;
+  
+    for (col = 0; col < n; col++) {
+        vector_D[col] = matriz[0][col];
+    }
+}
+
+void imprimir_vector_entero(int *vector, int n) {
+    int i;
+  
+    for (i = 0; i < n; i++) {
+        // printf("D[%d]: %d ", i, vector[i]);
+        cout << "D[" << i << "]: " << vector[i]; 
+    }
+    cout << "\n";
+}
+
+// aplica el algoritmo.
+void aplicar_dijkstra(string *vector_V, string *vector_S, string *vector_VS, int *vector_D, int **matriz, int n) {
+    int i;
+    int v;
+
+    // Inicializar vector D[] según datos de la matriz M[][] 
+    // Estado inicial.
+    inicializar_vector_D(vector_D, matriz, n);
+
+    cout << "--------- Estados iniciales ---------------------------------------\n";
+    imprimir_matriz(matriz, n);
+    cout << "\n";
+    imprimir_vector_caracter(vector_S, n);
+    imprimir_vector_caracter(vector_VS, n);
+    imprimir_vector_entero(vector_D, n);
+    cout << "------------------------------------------------------------------\n\n";
+    /*
+    // Agrega primer vértice.
+    cout << "> Agrega primer valor V[0] a S[] y actualiza VS[]\n\n";
+    agrega_vertice_a_S(S, V[0]);
+    imprimir_vector_caracter(S, n);
+
+    // Actualiza VS[]
+    actualizar_VS(V, S, VS);
+    imprimir_vector_caracter(VS, n);
+    imprimir_vector_entero(D, n);
+
+    // Bucle principal para aplicar el algoritmo de Dijkstra
+    for (i = 1; i < N; i++) {
+        // Elige un vértice en v de VS[] tal que D[v] sea el mínimo
+        cout << "\n> Elige vértice menor en VS[] según valores en D[]\n";
+        cout << "> Lo agrega a S[] y actualiza VS[]\n";
+        v = elegir_vertice(VS, D, V);
+
+        // Agrega el vértice a S[]
+        agrega_vertice_a_S(S, v);
+        imprimir_vector_caracter(S, n);
+
+        // Actualiza VS[]
+        actualizar_VS(V, S, VS);
+        imprimir_vector_caracter(VS, n);
+
+        // Actualiza pesos
+        actualizar_pesos(D, VS, M, V, v);
+        imprimir_vector_entero(D, n);
+    }
+    */
+}
+
+
 //
 int main(int argc, char **argv) {
     // número de elementos.
@@ -212,10 +281,12 @@ int main(int argc, char **argv) {
     //agregar algoritmo de distrak
     // Aplica el algoritmo de Dijkstra.
     //aplicar_dijkstra(V, S, VS, D, M);
+    //como no esta definido el n, hay que ingresarlo aparte para que funciones X
+    aplicar_dijkstra(V, S, VS, D, matriz, n);
+    //(string *vector_V, string *vector_S, string *vector_VS, int *vector_D, int **matriz, int n)
 
     //imprimir grafo
     imprimir_grafo(matriz, V, n);
 
     return 0;
 }
-
