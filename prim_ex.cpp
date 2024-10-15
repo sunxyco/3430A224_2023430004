@@ -34,6 +34,11 @@ int main() {
     int valores_minimos[N];
     int padres_valores_minimos[N];
 
+    //inicializar vectores
+    for (int i = 0; i < n; i++) {
+        valores_minimos[i] = INT_MAX; // Inicializa a infinito
+        padres_valores_minimos[i] = -1; // Inicializa padres
+    }
 
     //relaciones "(x,y)" para el arbol
     string arbol_minimo[N];
@@ -42,21 +47,25 @@ int main() {
     string buscar = "a";
     int posicion_nodo = buscar_nodo(vector_caracteres, buscar, n);
     //cout << posicion_nodo;
-
     banderas[posicion_nodo] = true;
     //el nodo raiz será vector_caracter[posicion_nodo]
     //                         banderas[posicion_nodo] = true
+    valores_minimos[posicion_nodo] = 0; // El costo del nodo raíz es 0
 
+ 
     //comparar valores minimos con conexiones al arbol
     for (int i = 0; i < n; i++) {
+
         if (banderas[i]) {//esta presente en el arbol
+            //se revisan las conexiones que tiene
             for (int j = 0; j < n; j++) {
-                //reocrre todas las conexiones que tiene el arbol
-                //cout << mi_matriz_ejemplo[i][j] << ", ";
+                // Seleccionar el nodo con el costo mínimo no visitado
                 //calcular pesos minimos y padres
-                if (mi_matriz_ejemplo[i][j] > 0) {
-                    cout << "nodos candidatos " << vector_caracteres[j] << " = " << mi_matriz_ejemplo[i][j] << "\n";
-                }
+
+                //el nodo j tiene el peso minimo de x
+                //bandera[j] = true;
+                //valores_min[] = +x;
+                //padre[j] = i; 
             }
         }
     }
