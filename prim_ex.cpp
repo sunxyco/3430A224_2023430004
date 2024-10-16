@@ -98,6 +98,76 @@ void inicializar_vector_caracter(string *vector_caracteres, int n) {
     }
 }
 
+// Función para validar que la entrada del usuario sea un entero
+int obtenerNumeroValido(const string& mensaje) {
+    string ingreso_usuario;
+    bool valid = false;
+    int numero = 0;
+
+    while (!valid) {
+        cout << mensaje;
+        cin >> ingreso_usuario;
+
+        if (ingreso_usuario == "x" || ingreso_usuario == "X") {
+            return -1;
+        }
+
+        try {
+            numero = stoi(ingreso_usuario);  // Intenta convertir la entrada a un entero
+            valid = true;  // Si la conversión es exitosa, salimos del bucle
+        }
+        catch (const invalid_argument& e) {
+            cout << "Entrada inválida, por favor ingresa un número entero válido.\n";
+        }
+        catch (const out_of_range& e) {
+            cout << "Número fuera de rango, intenta de nuevo.\n";
+        }
+    }
+
+    return numero;  // Devuelve el número entero validado
+}
+
+void generar_conexiones(int **matriz, string *vector_caracteres, int n) {
+    //necesito generar las conexiones para generar la matriz de adyacencia, *procurar que es matriz simetrica
+
+    cout << "MENU Generar Conexiones\n-ingrese el peso de las conexiones si es que existen, de lo contrario ingrese x\n\n";
+    for (int i = 0; i < n; i++) {
+        //cout << "Iteración: " << i + 1 << "\n";
+        int ingreso = 0;
+
+        for (int j = 0; j < n; j++) {
+            if (i == j) {
+                int valor = 0;
+                matriz[i][j] = valor;
+            }
+            //cout << "subiteracion " << i + 1 << "\n";
+            //se ven los espacios originales de la matriz inicializada donde no hay conexiones
+            if (i != j && matriz[i][j] == -2){
+
+                cout << "ingrese el peso entre el nodo[" << vector_caracteres[i] << "] ~ nodo[" << vector_caracteres[j] << "] > ";
+                ingreso = obtenerNumeroValido("");
+
+                //se generan las conexiones entre los dos nodos
+                matriz[i][j] = ingreso;
+                matriz[j][i] = ingreso;
+
+                cout << "\n";
+            }
+        }
+    }
+
+}
+
+void imprimir_matriz(int **matriz, int n) {
+    cout << endl;
+    for (int fila=0; fila<n; fila++) {
+        for (int col=0; col<n; col++) {
+            cout << matriz[fila][col] << ", ";
+        }
+        cout << endl;
+    }
+}
+
 int main() {
     cout << "Hola, mundo!" << endl;
     int n = N;
@@ -109,6 +179,7 @@ int main() {
         mi_matriz_ejemplo[i] = new int[n]; // Reservar memoria para las columnas en cada fila
     }
 
+    /*
     //hacer que el usuario ingrese las conexiones de la matriz
     int valores[6][6] = 
     {{0, 3, 1, -1, -1, 7},
@@ -117,13 +188,15 @@ int main() {
     {-1, 2, 5, 0, 3, 4},
     {-1, -1, 8, 3, 0, 5},
     {7, 6, -1, 4, 5, 0}};
+    */
 
-    // Copiar los valores de la matriz estática a la matriz dinámica
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            mi_matriz_ejemplo[i][j] = valores[i][j];
+            //se inicializan en -2 para hacer la correcta comparacion en generarconexiones(), donde si el usuario ingresa que no hay conexion directa se chanta un -1
+            mi_matriz_ejemplo[i][j] = -2;
         }
     }
+
 
     //para trakear nodos - a,b,c,d,e,f,g....
     string vector_caracteres[n];
@@ -131,6 +204,13 @@ int main() {
     //para saber si estan presentes ya en el arbol minimos -> si estan presentes es true, tienen el mismo indice que las letras
     bool banderas[n];
     inicializar_banderas(banderas, n);
+
+
+    //para que el usuario genere las conexiones entre los nodos
+    generar_conexiones(mi_matriz_ejemplo, vector_caracteres, n);
+
+
+    imprimir_matriz(mi_matriz_ejemplo, n);
 
     //relaciones "(x,y)" para el arbol
     string arbol_minimo[n];
@@ -142,6 +222,8 @@ int main() {
     banderas[posicion_nodo] = true;
 
     imprimir_grafo(mi_matriz_ejemplo, vector_caracteres, n);
+
+    string conexiones[n];
 
     //comparar valores minimos con conexiones al arbol
     while (exsite_algun_false(banderas, n)) {
@@ -186,6 +268,9 @@ int main() {
 
         banderas[indice_minimo] = true;
         string conexion = vector_caracteres[nodo_origen] + " -- " + vector_caracteres[indice_minimo];
+        
+        conexiones[contador_arbol] = "(" + vector_caracteres[nodo_origen] + "-" + vector_caracteres[indice_minimo] + ")";
+
         //escribir esto en el arbol
         cout << conexion << " [Label=" << minimo << "];" << endl;
 
@@ -199,6 +284,19 @@ int main() {
     for(int i = 0; i < n; i++) {
         cout << "\n" << arbol_minimo[i];
     }
+
+    cout << "\nContenido Arreglo L = {";
+    for (int i = 0; i < n-1; i++) {
+        cout << conexiones[i];
+        
+        if (i != n-2) {
+            cout << ", ";
+        } else {
+            cout << "}";
+        }
+    }
+
+
 
     generar_arbol(arbol_minimo, n);
 
