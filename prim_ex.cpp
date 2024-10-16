@@ -12,6 +12,15 @@ int buscar_nodo(string *vector, string buscar, int n){
     return -1; // Retorna -1 si no se encuentra el elemento
 }
 
+bool exsite_algun_false(bool *arreglo, int size) {
+    for (int i = 0; i < size; i++) {
+        if (!arreglo[i]) {
+            return true; // Si hay algún elemento que es false, retorna true -> indica que hay un nodo que no es parte del arbol
+        }
+    }
+    return false; // Si todos son true, retorna false
+}
+
 int main() {
     cout << "Hola, mundo!" << endl;
     int n = N;
@@ -24,6 +33,39 @@ int main() {
     {5,-1,5,0,-1,2},
     {-1,3,6,-1,0,6},
     {-1,-1,4,2,6,0}};
+
+    /*int mi_matriz_ejemplo[N][N] = 
+    {{0, 2, -1, 1, 4, -1},
+    {2, 0, 3, 2, -1, -1},
+    {-1, 3, 0, -1, 5, 6},
+    {1, 2, -1, 0, 3, -1},
+    {4, -1, 5, 3, 0, 2},
+    {-1, -1, 6, -1, 2, 0}};
+
+    int mi_matriz_ejemplo[N][N] = 
+    {{0, 3, 1, -1, -1, 7},
+    {3, 0, 4, 2, -1, 6},
+    {1, 4, 0, 5, 8, -1},
+    {-1, 2, 5, 0, 3, 4},
+    {-1, -1, 8, 3, 0, 5},
+    {7, 6, -1, 4, 5, 0}};
+
+    int mi_matriz_ejemplo[N][N] = 
+    {{0, -1, 4, 1, -1, 6},
+    {-1, 0, 2, 3, 5, -1},
+    {4, 2, 0, -1, 7, 3},
+    {1, 3, -1, 0, 6, 2},
+    {-1, 5, 7, 6, 0, 1},
+    {6, -1, 3, 2, 1, 0}};
+
+    int mi_matriz_ejemplo[N][N] = 
+    {{0, 3, -1, 4, -1, 5},
+    {3, 0, 7, -1, 2, -1},
+    {-1, 7, 0, 6, -1, 4},
+    {4, -1, 6, 0, 8, 3},
+    {-1, 2, -1, 8, 0, 5},
+    {5, -1, 4, 3, 5, 0}};
+    */
 
     //para trakear nodos
     string vector_caracteres[N] = {"a", "b", "c", "d", "e", "f"};
@@ -54,22 +96,51 @@ int main() {
 
  
     //comparar valores minimos con conexiones al arbol
-    for (int i = 0; i < n; i++) {
+    while (exsite_algun_false(banderas, n)) {
+        int minimo = INT_MAX;
+        int indice_minimo;
+        int nodo_origen;
 
-        if (banderas[i]) {//esta presente en el arbol
-            //se revisan las conexiones que tiene
-            for (int j = 0; j < n; j++) {
-                // Seleccionar el nodo con el costo mínimo no visitado
-                //calcular pesos minimos y padres
+        for (int i = 0; i < n; i++) {
 
-                //el nodo j tiene el peso minimo de x
-                //bandera[j] = true;
-                //valores_min[] = +x;
-                //padre[j] = i; 
+            //int minimo = INT_MAX;
+            //int indice_minimo;
+            if (banderas[i]) {//esta presente en el arbol
+                //se revisan las conexiones que tiene el nodo que si esta conectado al arbol y se busca el menor y se guarda con su indice
+
+                for (int j = 0; j < n; j++) {
+                    // Seleccionar el nodo con el costo mínimo no visitado
+                    //calcular pesos minimos y padres
+                    cout << mi_matriz_ejemplo[i][j] << " \n";
+                    
+                    //cout << "Nodo candidato " << vector_caracteres[i] << "--" << vector_caracteres[j] << "\n";
+                    if (mi_matriz_ejemplo[i][j] > 0 && mi_matriz_ejemplo[i][j] < minimo && !banderas[j]) {
+                        minimo = mi_matriz_ejemplo[i][j];
+                        nodo_origen = i;
+                        indice_minimo = j;
+                    }
+                    //el nodo j tiene el peso minimo de x
+                    //bandera[j] = true;
+                    //valores_min[] = +x;
+                    //padre[j] = i; 
+                }
+
+
+                //cout << "Nodo minimo " << vector_caracteres[indice_minimo] << "=" << minimo;
+
+                //meter valor minimo e indice minimo al arreglo de presentes en el arbol
+                //banderas[indice_minimo] = true;
+                //string conexion = vector_caracteres[i] + "--" + vector_caracteres[indice_minimo];
+                //cout << conexion;
             }
         }
-    }
+        banderas[indice_minimo] = true;
+        string conexion = vector_caracteres[nodo_origen] + "--" + vector_caracteres[indice_minimo];
+        cout << "Conexion minima: " << conexion << " = " << minimo << endl;
 
+        
+        //out << "Conexion minima " << vector_caracteres[indice_minimo] << "--" << vector_caracteres[indice_minimo] << " = " << minimo;
+    }
 
     return 0;
 }
