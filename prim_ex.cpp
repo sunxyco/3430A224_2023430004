@@ -1,4 +1,5 @@
 #include <iostream>
+//#define N 5
 #define N 6
 using namespace std;
 
@@ -33,6 +34,8 @@ int main() {
     {5,-1,5,0,-1,2},
     {-1,3,6,-1,0,6},
     {-1,-1,4,2,6,0}};
+
+    //int mi_matriz_ejemplo[N][N] = {{0,1,3,-1,-1},{1,0,3,6,-1},{3,3,0,4,2},{-1,6,4,0,5},{-1,-1,2,5,0}};
 
     /*int mi_matriz_ejemplo[N][N] = 
     {{0, 2, -1, 1, 4, -1},
@@ -111,10 +114,10 @@ int main() {
                 for (int j = 0; j < n; j++) {
                     // Seleccionar el nodo con el costo mínimo no visitado
                     //calcular pesos minimos y padres
-                    cout << mi_matriz_ejemplo[i][j] << " \n";
+                    //cout << mi_matriz_ejemplo[i][j] << " \n";
                     
                     //cout << "Nodo candidato " << vector_caracteres[i] << "--" << vector_caracteres[j] << "\n";
-                    if (mi_matriz_ejemplo[i][j] > 0 && mi_matriz_ejemplo[i][j] < minimo && !banderas[j]) {
+                    if (mi_matriz_ejemplo[i][j] > 0 && mi_matriz_ejemplo[i][j] <= minimo && !banderas[j]) {
                         minimo = mi_matriz_ejemplo[i][j];
                         nodo_origen = i;
                         indice_minimo = j;
