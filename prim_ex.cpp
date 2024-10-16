@@ -25,12 +25,6 @@ bool exsite_algun_false(bool *arreglo, int size) {
     return false; // Si todos son true, retorna false
 }
 
-#include <iostream>
-#include <fstream>
-#include <string>
-
-using namespace std;
-
 void imprimir_grafo(int **matriz, string *vector, int n) {
     ofstream archivo("grafo.txt");
 
@@ -42,8 +36,7 @@ void imprimir_grafo(int **matriz, string *vector, int n) {
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) { // Recorre solo la mitad superior de la matriz - porque sino se generan las conexiones dos veces
                 if (matriz[i][j] > 0) {
-                    archivo << vector[i] << " -- " << vector[j] 
-                            << " [label=" << matriz[i][j] << "];\n";
+                    archivo << vector[i] << " -- " << vector[j] << " [label=" << matriz[i][j] << "];\n";
                 }
             }
         }
@@ -87,6 +80,24 @@ void generar_arbol(string *conexiones, int n) {
     system("arbol01.png &"); // En Windows usa 'start', en Linux usa 'xdg-open' o 'open' en Mac
 }
 
+void inicializar_banderas(bool *banderas, int n) {
+    for (int i = 0; i < n; i++) {
+        banderas[i] = false;
+    }
+}
+
+void inicializar_vector_caracter(string *vector_caracteres, int n) {
+    char letters[n]; // Declaracion del arreglo de caracteres
+
+    // Llenar el arreglo con letras de 'A' a 'F'
+    for (int i = 0; i < n; ++i) {
+        //letters[i] = 'A' + i; // Asignar valores ASCII de 'A' a 'F'
+        letters[i] = 97 + i; // Asignar valores ASCII de 'a' a 'f'
+        //letters[i] = 65 + i; // Asignar valores ASCII de 'A' a 'F' 
+        vector_caracteres[i] = string(1, letters[i]);
+    }
+}
+
 int main() {
     cout << "Hola, mundo!" << endl;
     int n = N;
@@ -97,14 +108,15 @@ int main() {
     for (int i = 0; i < n; i++) {
         mi_matriz_ejemplo[i] = new int[n]; // Reservar memoria para las columnas en cada fila
     }
-    
+
+    //hacer que el usuario ingrese las conexiones de la matriz
     int valores[6][6] = 
-    {{0,6,1,5,-1,-1},
-    {6,0,5,-1,3,-1},
-    {-1,5,0,5,6,4},
-    {5,-1,5,0,-1,2},
-    {-1,3,6,-1,0,6},
-    {-1,-1,4,2,6,0}};
+    {{0, 3, 1, -1, -1, 7},
+    {3, 0, 4, 2, -1, 6},
+    {1, 4, 0, 5, 8, -1},
+    {-1, 2, 5, 0, 3, 4},
+    {-1, -1, 8, 3, 0, 5},
+    {7, 6, -1, 4, 5, 0}};
 
     // Copiar los valores de la matriz estática a la matriz dinámica
     for (int i = 0; i < n; i++) {
@@ -113,75 +125,21 @@ int main() {
         }
     }
 
-    /*
-    int mi_matriz_ejemplo[N][N] = {{0,19,13,13,22},
-                                    {28,0,27,13,13},
-                                    {13,27,0,19,14},
-                                    {13,13,19,0,19},
-                                    {22,13,14,13,0}};*/
-
-    //int mi_matriz_ejemplo[N][N] = {{0,1,3,-1,-1},{1,0,3,6,-1},{3,3,0,4,2},{-1,6,4,0,5},{-1,-1,2,5,0}};
-
-    /*int mi_matriz_ejemplo[N][N] = 
-    {{0, 2, -1, 1, 4, -1},
-    {2, 0, 3, 2, -1, -1},
-    {-1, 3, 0, -1, 5, 6},
-    {1, 2, -1, 0, 3, -1},
-    {4, -1, 5, 3, 0, 2},
-    {-1, -1, 6, -1, 2, 0}};
-
-    int mi_matriz_ejemplo[N][N] = 
-    {{0, 3, 1, -1, -1, 7},
-    {3, 0, 4, 2, -1, 6},
-    {1, 4, 0, 5, 8, -1},
-    {-1, 2, 5, 0, 3, 4},
-    {-1, -1, 8, 3, 0, 5},
-    {7, 6, -1, 4, 5, 0}};
-
-    int mi_matriz_ejemplo[N][N] = 
-    {{0, -1, 4, 1, -1, 6},
-    {-1, 0, 2, 3, 5, -1},
-    {4, 2, 0, -1, 7, 3},
-    {1, 3, -1, 0, 6, 2},
-    {-1, 5, 7, 6, 0, 1},
-    {6, -1, 3, 2, 1, 0}};
-
-    int mi_matriz_ejemplo[N][N] = 
-    {{0, 3, -1, 4, -1, 5},
-    {3, 0, 7, -1, 2, -1},
-    {-1, 7, 0, 6, -1, 4},
-    {4, -1, 6, 0, 8, 3},
-    {-1, 2, -1, 8, 0, 5},
-    {5, -1, 4, 3, 5, 0}};
-    */
-
-    //para trakear nodos
-    string vector_caracteres[n] = {"a", "b", "c", "d", "e", "f"};
-    //para saber si estan presentes ya en el arbol minimos
-    bool banderas[n] = {false, false, false, false, false, false};
-
-    //valores minimios de las conexiones y a quien pertenecen las conexiones
-    int valores_minimos[N];
-    int padres_valores_minimos[N];
-
-    //inicializar vectores
-    for (int i = 0; i < n; i++) {
-        valores_minimos[i] = INT_MAX; // Inicializa a infinito
-        padres_valores_minimos[i] = -1; // Inicializa padres
-    }
+    //para trakear nodos - a,b,c,d,e,f,g....
+    string vector_caracteres[n];
+    inicializar_vector_caracter(vector_caracteres, n);
+    //para saber si estan presentes ya en el arbol minimos -> si estan presentes es true, tienen el mismo indice que las letras
+    bool banderas[n];
+    inicializar_banderas(banderas, n);
 
     //relaciones "(x,y)" para el arbol
-    string arbol_minimo[N];
+    string arbol_minimo[n];
     int contador_arbol = 0;
 
-    //vamos a empezar con el nodo a
+    //vamos a empezar con el nodo a ~ hacer que el usuario elija el iniciañ
     string buscar = "a";
     int posicion_nodo = buscar_nodo(vector_caracteres, buscar, n);
-    //cout << posicion_nodo;
     banderas[posicion_nodo] = true;
-    //el nodo raiz será vector_caracter[posicion_nodo]
-    //                         banderas[posicion_nodo] = true
-    valores_minimos[posicion_nodo] = 0; // El costo del nodo raíz es 0
 
     imprimir_grafo(mi_matriz_ejemplo, vector_caracteres, n);
 
