@@ -158,14 +158,21 @@ void generar_conexiones(int **matriz, string *vector_caracteres, int n) {
 
 }
 
-void imprimir_matriz(int **matriz, int n) {
+void imprimir_matriz(int **matriz, int n, string *vector_caracteres) {
+    cout << "Matriz de adyacencia\n\n";
+    cout << "   ";
+    for (int i = 0; i < n; i++) {
+        cout << vector_caracteres[i] << "  ";
+    }
     cout << endl;
     for (int fila=0; fila<n; fila++) {
+        cout << vector_caracteres[fila] << "  ";
         for (int col=0; col<n; col++) {
             cout << matriz[fila][col] << ", ";
         }
         cout << endl;
     }
+    cout << "\n\n";
 }
 
 int main(int argc, char **argv) {
@@ -213,7 +220,7 @@ int main(int argc, char **argv) {
     generar_conexiones(mi_matriz_ejemplo, vector_caracteres, n);
 
 
-    imprimir_matriz(mi_matriz_ejemplo, n);
+    imprimir_matriz(mi_matriz_ejemplo, n, vector_caracteres);
 
     //relaciones "(x,y)" para el arbol
     string arbol_minimo[n];
@@ -275,7 +282,7 @@ int main(int argc, char **argv) {
         conexiones[contador_arbol] = "(" + vector_caracteres[nodo_origen] + "-" + vector_caracteres[indice_minimo] + ")";
 
         //escribir esto en el arbol
-        cout << conexion << " [Label=" << minimo << "];" << endl;
+        //cout << conexion << " [Label=" << minimo << "];" << endl;
 
         arbol_minimo[contador_arbol] = conexion + " [label=" + to_string(minimo) + "];";
 
