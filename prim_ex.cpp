@@ -168,9 +168,12 @@ void imprimir_matriz(int **matriz, int n) {
     }
 }
 
-int main() {
-    cout << "Hola, mundo!" << endl;
-    int n = N;
+int main(int argc, char **argv) {
+    // número de elementos.
+    int n;
+
+    // convierte string a entero.
+    n = atoi(argv[1]);
 
     //matriz adyacencia
     // Declaración de la matriz dinamica 
