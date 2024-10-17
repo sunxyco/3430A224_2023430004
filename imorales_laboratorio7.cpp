@@ -140,7 +140,7 @@ class Grafo {
 
         //imprime la matriz de adyacencia que ingreso el usuario
         void imprimir_matriz(string *vector_caracteres) {
-            cout << "Matriz de adyacencia\n\n";
+            cout << "\nMatriz de adyacencia\n\n";
             cout << "   ";
             for (int i = 0; i < limite; i++) {
                 cout << vector_caracteres[i] << "  ";
@@ -205,14 +205,14 @@ class Grafo {
                 cout << "\n" << arbol_minimo[i];
             }
 
-            cout << "\nContenido Arreglo L = {";
+            cout << "\n\nContenido Arreglo L = {";
             for (int i = 0; i < n-1; i++) {
                 cout << conexiones[i];
                 
                 if (i != n-2) {
                     cout << ", ";
                 } else {
-                    cout << "}\n";
+                    cout << "}\n\n";
                 }
             }
         }
