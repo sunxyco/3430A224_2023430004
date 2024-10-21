@@ -4,6 +4,7 @@
 #include <chrono>//timepo
 using namespace std;
 
+//se generan dos arreglos iguales
 void llenarArreglo(int **arr, int size) {
     // Llenar el arreglo con numeros aleatorios entre 1 y size
     for (int i = 0; i < size; ++i) {
@@ -27,11 +28,9 @@ void mostrarArreglo(int **arr, int size) {
 
 //selection
 int selection(int *arr, int n) {
-    //int limite = n;
     int i;
     int menor;
     int k;
-    //int j;
 
     for (int i = 0; i < n - 1; i++) {
         menor = arr[i];
@@ -52,43 +51,47 @@ int selection(int *arr, int n) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //quicksort
-void swap(int* a, int* b)
+//intercambia los valores de los punteros
+void intercambio(int* a, int* b)
 {
-    int t = *a;
+    int temporal = *a;
     *a = *b;
-    *b = t;
+    *b = temporal;
 }
 
-int partition (int arr[], int low, int high)
+int particion(int arr[], int indice_izquierda, int indice_derecha)
 {
-    int pivot = arr[high];
-    int i = (low - 1);
+    //como pivote se toma al elemento de mas a la derecha
+    int pivote = arr[indice_derecha];
+    int i = (indice_izquierda - 1);
 
-    for (int j = low; j <= high- 1; j++)
+    //se recorren todos los elementos de el arrglo y se comparan con el pivote
+    for (int j = indice_izquierda; j <= indice_derecha- 1; j++)
     {
-        if (arr[j] <= pivot)
+        if (arr[j] <= pivote)
         {
             i++;
-            swap(&arr[i], &arr[j]);
+            intercambio(&arr[i], &arr[j]);
         }
     }
-    swap(&arr[i + 1], &arr[high]);
+    intercambio(&arr[i + 1], &arr[indice_derecha]);
     return (i + 1);
 }
 
-void quick_sort(int arr[], int low, int high)
+//funcion de ordenamiento recursiva donde los subarreglos son cada vez mas pequeños
+void quick_sort(int arr[], int indice_izquierda, int indice_derecha)
 {
-    if (low < high)
+    if (indice_izquierda < indice_derecha)
     {
-        int pivot = partition(arr, low, high);
+        int pivote = particion(arr, indice_izquierda, indice_derecha);
 
-        quick_sort(arr, low, pivot - 1);
-        quick_sort(arr, pivot + 1, high);
+        quick_sort(arr, indice_izquierda, pivote - 1);
+        quick_sort(arr, pivote + 1, indice_derecha);
     }
 }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-                
+//se ordenan los arreglo, se calcula y se imprime cuanto tiempo se demoro en ordenarse
 void ordenamiento(int **arr, int size) {
     cout << "ordenando fila 1 ~ selection sort > ";
     auto start = chrono::high_resolution_clock::now();
@@ -96,9 +99,8 @@ void ordenamiento(int **arr, int size) {
     auto end = chrono::high_resolution_clock::now();
     //calcularduracion
     chrono::duration<double> variable1 = (end - start);
-
     //cout << " duracion> " << to_string(variable1) << "x";
-    cout << "Tiempo de ejecucion:" << (variable1.count())*1000 << " milisegundos" << endl;
+    cout << "Tiempo de ejecucion: " << (variable1.count())*1000 << " milisegundos" << endl;
 
 
     cout << "ordenando fila 2 ~ quick sort";
@@ -107,10 +109,10 @@ void ordenamiento(int **arr, int size) {
     auto end2 = chrono::high_resolution_clock::now();
     //calcularduracion
     chrono::duration<double> variable2 = (end2 - start1);
-    cout << "Tiempo de ejecucion:" << (variable2.count())*1000 << " milisegundos\n" << endl;
-
+    cout << "Tiempo de ejecucion: " << (variable2.count())*1000 << " milisegundos\n" << endl;
 }
 
+//se toman dos parametros al ejecutar el programa
 int main(int argc, char **argv) {
 
     //se verifica que se entrego el parametro de tamaño de los arreglos
@@ -130,14 +132,11 @@ int main(int argc, char **argv) {
         cout << "No se ingreso segundo parametro, por lo que no se mostraran los arreglos\n";
     }
 
-
+    //si se ingresa el segundo parametro "x" se coloca true y se imprimiran los arreglos
     bool bandera_imprimir = false;
-
     if (mostrar == "x" || mostrar == "X") {
         bandera_imprimir = true;
     }
-
-    //int **arr;
 
     //se inicializan los dos arrelgos vacios
     int **arr = new int*[2];
@@ -145,8 +144,7 @@ int main(int argc, char **argv) {
     for (int i = 0; i < 2; i++) {
         arr[i] = new int[n];
     }
-    //int arr[2][n];
-    //int n = N;
+
 
     // Inicializa la semilla para numeros aleatorios
     srand(static_cast<unsigned int>(time(0)));
@@ -158,7 +156,8 @@ int main(int argc, char **argv) {
         cout << "Arreglo de numeros enteros:\n";
         mostrarArreglo(arr, n);
     }
-    //implementar selection~quick_sort
+
+    //se ordenan los dos arreglos
     ordenamiento(arr, n);
 
     if (bandera_imprimir) {
