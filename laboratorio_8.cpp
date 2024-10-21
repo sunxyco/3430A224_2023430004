@@ -112,10 +112,34 @@ void ordenamiento(int **arr, int size) {
 }
 
 int main(int argc, char **argv) {
+
+    //se verifica que se entrego el parametro de tamaño de los arreglos
+    if (argc < 2) {
+        cerr << "Error: Debe proporcionar al menos un número como argumento." << endl;
+        return 1;
+    }
+
     int n = atoi(argv[1]);
+
+    string mostrar = "";
+
+    //se verifica que se entrego el parametro para mostrar los arreglos
+    if (argc >= 3) {
+        mostrar = argv[2];
+    } else {
+        cout << "No se ingreso segundo parametro, por lo que no se mostraran los arreglos\n";
+    }
+
+
+    bool bandera_imprimir = false;
+
+    if (mostrar == "x" || mostrar == "X") {
+        bandera_imprimir = true;
+    }
 
     //int **arr;
 
+    //se inicializan los dos arrelgos vacios
     int **arr = new int*[2];
     //se inicializa el arreglo
     for (int i = 0; i < 2; i++) {
@@ -130,13 +154,17 @@ int main(int argc, char **argv) {
     // seleccion
     llenarArreglo(arr, n);
 
-    cout << "Arreglo de numeros enteros:\n";
-    mostrarArreglo(arr, n);
-
+    if (bandera_imprimir) {
+        cout << "Arreglo de numeros enteros:\n";
+        mostrarArreglo(arr, n);
+    }
     //implementar selection~quick_sort
     ordenamiento(arr, n);
 
-    mostrarArreglo(arr, n);
-
+    if (bandera_imprimir) {
+        cout << "Arreglo de numeros ordenados:\n";
+        mostrarArreglo(arr, n);
+    }
+   
     return 0;
 }
