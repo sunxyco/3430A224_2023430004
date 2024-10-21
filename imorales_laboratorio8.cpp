@@ -28,7 +28,6 @@ void mostrarArreglo(int **arr, int size) {
 
 //selection
 int selection(int *arr, int n) {
-    int i;
     int menor;
     int k;
 
@@ -123,18 +122,18 @@ int main(int argc, char **argv) {
 
     int n = atoi(argv[1]);
 
-    string mostrar = "";
+    string ver = "";
 
     //se verifica que se entrego el parametro para mostrar los arreglos
     if (argc >= 3) {
-        mostrar = argv[2];
+        ver = argv[2];
     } else {
         cout << "No se ingreso segundo parametro, por lo que no se mostraran los arreglos\n";
     }
 
     //si se ingresa el segundo parametro "x" se coloca true y se imprimiran los arreglos
     bool bandera_imprimir = false;
-    if (mostrar == "x" || mostrar == "X") {
+    if (ver == "VER") {
         bandera_imprimir = true;
     }
 
