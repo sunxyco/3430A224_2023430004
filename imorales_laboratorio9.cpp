@@ -21,51 +21,27 @@ void mostrar_arreglo(int *array, int espacios) {
     }
 }
 
-//funcion buscar
-void busqueda_linead(int *v, int n, int clave) {
+void resolver_colicion_lineal(int *v, int n, int clave) {
     int d = mi_hash(clave, n);
-    
-    if(v[d] > 0 && v[d] == clave) {
-        cout << "la clave está en la posicion " << d;
-    } else {
-        int dx = d + 1;
-        while ((dx < n) && (v[dx] != clave) && (dx != d))
-        {
-            dx = dx + 1;
-            if(dx == n - 1){
-                dx = 0;
-            }
-        }
+    int index_comparacion = d;
 
-        if((v[dx] < 0) || (dx == d)){
-            cout << "la informacion no se encuentra en el arreglo" << dx;
-        } else {
-            cout << "la informacion esta en la posicion " << dx << "\n";
-        }
-    }
-}
-
-//recorre el arreglo buscando un espacio vacio
-int resolver_colicion_lineal(int *v, int n, int index) {
-    
-    int index_comparacion = index + 1;
-
-    //se busca un -1 porque ese es un espaico vacio
-    while ((index_comparacion <= n) && (v[index_comparacion] != -1) && (index_comparacion != index)) {
+    while ((index_comparacion <= n) && (v[index_comparacion] != -1) && (index_comparacion != d - 1)) {        
         index_comparacion = index_comparacion + 1;
+
         if(index_comparacion >= n) {
             index_comparacion = 0;
         }
         cout << "\n~ " << index_comparacion;
     }
 
-    if((v[index_comparacion] < 0) || (index_comparacion == index)){
+    if((v[index_comparacion] < 0) || (index_comparacion == d)){
         cout << "hay un espacio disponible en " << index_comparacion << endl;
+        v[index_comparacion] = clave;
     } else {
         cout << "no hay espacios disponibles\n";
     }
 
-    return index_comparacion;
+    //return index_comparacion;
 }
 
 int main() {
@@ -99,11 +75,7 @@ int main() {
         }else{
             //existe colision
             cout << "existe colision hay que resolver\n";
-            //resolver colicion
-
-            //metodo lineal ~ buscar posicion vacia
-            int indice_libre = resolver_colicion_lineal(mi_array_para_ordenar, espacios_totales, index);
-            mi_array_para_ordenar[indice_libre] = mis_numeros_ejemplo[i];
+            resolver_colicion_lineal(mi_array_para_ordenar, espacios_totales, mis_numeros_ejemplo[i]);
         }
     }
 
