@@ -44,6 +44,33 @@ void resolver_colicion_lineal(int *v, int n, int clave) {
     //return index_comparacion;
 }
 
+void resolver_colicion_cuadrado(int *v, int n, int clave) {
+    int d = mi_hash(clave, n);
+    int index_comparacion = d;
+    int i = 0;
+
+    while ((index_comparacion <= n) && (v[index_comparacion] != -1) && (index_comparacion != d - 1)) {        
+        i = i + 1;
+        index_comparacion = d + (i * i);
+
+        //estudiar que pasa si el indice de comparacion es mas grande que el n (se me quedaron los apuntes en la casa x)
+        if(index_comparacion >= n) {
+            index_comparacion = 0;
+            i = 0;
+            d = 0;
+        }
+
+        cout << "\n~ " << index_comparacion;
+    }
+
+    if((v[index_comparacion] < 0) || (index_comparacion == d)){
+        cout << "hay un espacio disponible en " << index_comparacion << endl;
+        v[index_comparacion] = clave;
+    } else {
+        cout << "no hay espacios disponibles\n";
+    }
+}
+
 int main() {
     cout << "Hola, Mundo" << endl;
 
@@ -75,7 +102,8 @@ int main() {
         }else{
             //existe colision
             cout << "existe colision hay que resolver\n";
-            resolver_colicion_lineal(mi_array_para_ordenar, espacios_totales, mis_numeros_ejemplo[i]);
+            //resolver_colicion_lineal(mi_array_para_ordenar, espacios_totales, mis_numeros_ejemplo[i]);
+            resolver_colicion_cuadrado(mi_array_para_ordenar, espacios_totales, mis_numeros_ejemplo[i]);
         }
     }
 
