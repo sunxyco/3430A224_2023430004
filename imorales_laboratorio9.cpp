@@ -12,6 +12,14 @@ int mi_hash(int numero, int cantidad) {
     return index;
 }
 
+int mi_segundo_hash(int numero, int cantidad) {
+    int index;
+
+    index = ((numero + 1) % cantidad) + 1;
+
+    return index;
+}
+
 void mostrar_arreglo(int *array, int espacios) {
 
     cout << "Arreglo Final\n";
@@ -48,16 +56,18 @@ void resolver_colicion_cuadrado(int *v, int n, int clave) {
     int d = mi_hash(clave, n);
     int index_comparacion = d;
     int i = 0;
+    int contador_intentos = 0;
 
-    while ((index_comparacion <= n) && (v[index_comparacion] != -1) && (index_comparacion != d - 1)) {        
+    while ((index_comparacion < n) && (v[index_comparacion] != -1) && (index_comparacion != d - 1)) {
+        //si lleva muchos intentos ingresar el valor se opta po no ingresarlo
+        contador_intentos = contador_intentos + 1;        
         i = i + 1;
         index_comparacion = d + (i * i);
 
-        //estudiar que pasa si el indice de comparacion es mas grande que el n (se me quedaron los apuntes en la casa x)
+        //indice fuera de rango
         if(index_comparacion >= n) {
-            index_comparacion = 0;
-            i = 0;
-            d = 0;
+            //index_comparacion = 0;
+            contador_intentos = mi_hash(index_comparacion, n);
         }
 
         cout << "\n~ " << index_comparacion;
@@ -69,6 +79,29 @@ void resolver_colicion_cuadrado(int *v, int n, int clave) {
     } else {
         cout << "no hay espacios disponibles\n";
     }
+}
+
+void resolver_collision_doblehash(int *v, int n, int clave) {
+    int d = mi_hash(clave, n);
+    int index_comparacion = d;
+
+    /*
+    Mientras ((DX <= N) y (V[DX] <> VACIO) y (V[DX] <> K) y (DX <> D) Repetir
+        Hacer DX <- H’(DX)*/
+    while ((index_comparacion < n) && (v[index_comparacion] != -1) && (index_comparacion != d - 1)) {
+        index_comparacion = mi_segundo_hash(index_comparacion, n);
+        cout << "revisando " << index_comparacion << endl;
+    }
+
+    
+    if((v[index_comparacion] < 0) || (index_comparacion == d)){
+        cout << "hay un espacio disponible en " << index_comparacion << endl;
+        v[index_comparacion] = clave;
+    } else {
+        cout << "no hay espacios disponibles\n";
+    }
+
+
 }
 
 int main() {
@@ -101,7 +134,7 @@ int main() {
             mi_array_para_ordenar[index] = mis_numeros_ejemplo[i];
         }else{
             //existe colision
-            cout << "existe colision hay que resolver\n";
+            cout << "existe colision hay que resolver ~\n";
             //resolver_colicion_lineal(mi_array_para_ordenar, espacios_totales, mis_numeros_ejemplo[i]);
             resolver_colicion_cuadrado(mi_array_para_ordenar, espacios_totales, mis_numeros_ejemplo[i]);
         }
