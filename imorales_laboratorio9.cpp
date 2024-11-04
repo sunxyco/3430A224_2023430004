@@ -2,6 +2,8 @@
 using namespace std;
 #include <cstdlib> // Para rand() y srand()
 
+
+//hash normal
 int mi_hash(int numero, int cantidad) {
     int index;
 
@@ -10,6 +12,7 @@ int mi_hash(int numero, int cantidad) {
     return index;
 }
 
+//para el metodo de doble hash
 int mi_segundo_hash(int numero, int cantidad) {
     int index;
 
@@ -21,6 +24,8 @@ int mi_segundo_hash(int numero, int cantidad) {
 
     return index;
 }
+
+//funcion para mostrar el arreglo donde se guardan los datos
 
 void mostrar_arreglo(int *array, int espacios) {
 
@@ -64,7 +69,6 @@ void resolver_colicion_cuadrado(int *v, int n, int clave) {
 
         //indice fuera de rango
         if(index_comparacion >= n) {
-            //index_comparacion = 0;
             index_comparacion = mi_hash(index_comparacion, n);
         }
         cout << "\nrevisando~ [" << index_comparacion << "]";
@@ -100,7 +104,6 @@ void resolver_collision_doblehash(int *v, int n, int clave) {
         cout << "no hay espacios disponibles\n";
     }
 }
-
 
 // Función para validar que la entrada del usuario sea un entero
 int obtenerNumeroValido(const string& mensaje) {
@@ -173,7 +176,6 @@ int main(int argc, char **argv) {
     srand(static_cast<unsigned int>(time(0)));
     // ------------------------------------------
 
-
     //cantidad de numeros en el arreglo
     int user_input_cantidad = obtenerNumeroValido("Ingrese el la cantidad de numeros que tendra el arreglo (max = 100)\n> ");
 
@@ -185,12 +187,9 @@ int main(int argc, char **argv) {
         array_contienehash[i] = -1;
     }
 
-
     //hash
     for(int i = 0; i < user_input_cantidad; i++) {
         int index = mi_hash(mis_numeros[i], user_input_cantidad);
-        //cout << index << "\n";
-
         //como el array se inicializa en -1 para ver si esta vacio se ve si es que tiene algun numeor que es menor que 0
         cout << mis_numeros[i] << " ";
         if(array_contienehash[index] < 0){
