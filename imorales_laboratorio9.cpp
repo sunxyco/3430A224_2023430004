@@ -3,6 +3,8 @@
 
 #include <iostream>
 using namespace std;
+#include <cstdlib> // Para rand() y srand()
+
 
 int mi_hash(int numero, int cantidad) {
     int index;
@@ -15,7 +17,11 @@ int mi_hash(int numero, int cantidad) {
 int mi_segundo_hash(int numero, int cantidad) {
     int index;
 
-    index = ((numero + 1) % cantidad);
+    index = (((numero + 1) % cantidad) + 1);
+
+    if(index >= cantidad) {
+        index = 0;
+    }
 
     return index;
 }
@@ -39,7 +45,7 @@ void resolver_colicion_lineal(int *v, int n, int clave) {
         if(index_comparacion >= n) {
             index_comparacion = 0;
         }
-        cout << "\n~ " << index_comparacion;
+        cout << "revisando~ [" << index_comparacion << "]";
     }
 
     if((v[index_comparacion] < 0) || (index_comparacion == d)){
@@ -67,7 +73,7 @@ void resolver_colicion_cuadrado(int *v, int n, int clave) {
             //index_comparacion = 0;
             index_comparacion = mi_hash(index_comparacion, n);
         }
-        cout << "\n~ " << index_comparacion;
+        cout << "\nrevisando~ [" << index_comparacion << "]";
 
         contador_intentos = contador_intentos + 1;
         if(contador_intentos == 100) {
@@ -77,7 +83,7 @@ void resolver_colicion_cuadrado(int *v, int n, int clave) {
     }
 
     if((v[index_comparacion] < 0) || (index_comparacion == d)){
-        cout << "hay un espacio disponible en " << index_comparacion << endl;
+        cout << "hay un espacio disponible en [" << index_comparacion << "]" << endl;
         v[index_comparacion] = clave;
     } else {
         cout << "no hay espacios disponibles\n";
@@ -91,13 +97,13 @@ void resolver_collision_doblehash(int *v, int n, int clave) {
     /*
     Mientras ((DX <= N) y (V[DX] <> VACIO) y (V[DX] <> K) y (DX <> D) Repetir
         Hacer DX <- H’(DX)*/
-    while ((index_comparacion < n) && (v[index_comparacion] != -1) && (index_comparacion != d - 1)) {
+    while ((index_comparacion < n) && (v[index_comparacion] != -1)) {
         index_comparacion = mi_segundo_hash(index_comparacion, n);
-        cout << "revisando " << index_comparacion << endl;
+        cout << "revisando [" << index_comparacion << "]" << endl;
     }
     
     if((v[index_comparacion] < 0) || (index_comparacion == d)){
-        cout << "hay un espacio disponible en " << index_comparacion << endl;
+        cout << "hay un espacio disponible en [" << index_comparacion << "]" << endl;
         v[index_comparacion] = clave;
     } else {
         cout << "no hay espacios disponibles\n";
@@ -128,13 +134,14 @@ int obtenerNumeroValido(const string& mensaje) {
     return numero;  // Devuelve el número entero validado
 }
 
-void obtener_array(int cantidad_numeros, int *array){
+void obtener_array_aleatorio(int cantidad_numeros, int *array){
 
-    cout << "los numeros que estaran en el arreglo";
-
-    for(int i = 0; i < cantidad_numeros; i++){
-        array[i] = obtenerNumeroValido("");
+    cout << "los numeros que estaran en el arreglo \n[";
+    for (int i = 0; i < cantidad_numeros; ++i) {
+        array[i] = rand() % 100 + 1; // Genera un numero entre 1 y 100
+        cout << array[i] << ", ";
     }
+    cout << "]\n\n";
 
     //return array;
 }
@@ -164,7 +171,6 @@ int main(int argc, char **argv) {
         cerr << "Error: Debe proporcionar al menos un número como argumento." << endl;
         return 1;
     }
-
     string opcion_colisiones = "";
     opcion_colisiones = argv[1];
 
@@ -174,21 +180,22 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    // Inicializa la semilla para numeros aleatorios
+    srand(static_cast<unsigned int>(time(0)));
+    // ------------------------------------------
+
+
     //cantidad de numeros en el arreglo
-    int user_input_cantidad = 15;
-    //int user_input_cantidad = obtenerNumeroValido("Ingrese el la cantidad de numeros que tendra el arreglo (max = 100)");
+    int user_input_cantidad = obtenerNumeroValido("Ingrese el la cantidad de numeros que tendra el arreglo (max = 100)\n> ");
 
-    //numeros que despues tendran que ser aleatorios
-    int mis_numeros[15] = {23, 42, 5, 66, 14, 43, 59, 81, 37, 49, 28, 55, 94, 80, 64};
+    int mis_numeros[100];
+    obtener_array_aleatorio(user_input_cantidad, mis_numeros);//se llena el array con numeros aleatorios
 
-    /*int mis_numeros[100];
-    obtener_array(user_input_cantidad, mis_numeros);*/
-
-
-    int array_contienehash[100]; //aki es donde se van a ordenar los arrays
+    int array_contienehash[100]; //aqui es donde se van a ordenar los arrays
     for(int i = 0; i < user_input_cantidad; i++) {//se inicializan los espacios que se usaran
         array_contienehash[i] = -1;
     }
+
 
     //hash
     for(int i = 0; i < user_input_cantidad; i++) {
@@ -199,11 +206,11 @@ int main(int argc, char **argv) {
         cout << mis_numeros[i] << " ";
         if(array_contienehash[index] < 0){
             //espacio disponible
-            cout << "espacio disponiblle\n";
+            cout << "Hash -> [" << index << "] espacio disponiblle\n";
             array_contienehash[index] = mis_numeros[i];
         }else{
             //existe colision
-            cout << "existe colision en [" << index << "] hay que resolver ~\n";
+            cout << "Hash -> [" << index << "] existe colision\n";
             if (opcion_colisiones == "L") {
                 resolver_colicion_lineal(array_contienehash, user_input_cantidad, mis_numeros[i]);
             }
@@ -218,17 +225,18 @@ int main(int argc, char **argv) {
 
     mostrar_arreglo(array_contienehash, user_input_cantidad);
 
-    cout << "Buscar\n";
+    cout << "Buscar (ingrese numero negativo para salir)\n";
+    bool buscar = true;
 
-    int clave = 5;
-    busqueda(array_contienehash, user_input_cantidad, clave);
-    int clave2 = 23;
-    busqueda(array_contienehash, user_input_cantidad, clave2);
-    int clave3 = 47;
-    busqueda(array_contienehash, user_input_cantidad, clave3);
-    int clave4 = 28;
-    busqueda(array_contienehash, user_input_cantidad, clave4);
-    
-
+    while(buscar) {
+        int clave = obtenerNumeroValido("Ingrese numero a buscar\n> ");
+        if(clave > 0){
+            busqueda(array_contienehash, user_input_cantidad, clave);
+        } else {
+            cout << "Saliendo...";
+            buscar = false;
+            break;
+        }
+    }
     return 0;
 }
