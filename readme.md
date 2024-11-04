@@ -1,24 +1,19 @@
-# Selection vs Quick Sort
+# Hashing con Resolución de Colisiones
 
-Este programa compara los algoritmos de ordenamiento **Selection Sort** y **Quick Sort**, midiendo el tiempo de ejecución de cada uno sobre dos arreglos de tamaño igual.
+Este programa implementa una tabla hash en C++ que permite el ingreso, almacenamiento y búsqueda de numeros con métodos de resolución de colisiones: (lineal, cuadrático y doble hash). Los números se almacenan en una tabla hash(arreglo), y si se produce una colisión, el programa intenta resolverla usando el método especificado por el usuario al momento de compilar el programa.
 
 ## Parámetros
 
-1. **Tamaño del arreglo (`<tamaño_arreglo>`)**: Un número entero positivo que especifica el tamaño de los dos arreglos a generar. Ambos arreglos se llenarán con los mismos valores aleatorios para una comparación justa entre los algoritmos.
-2. **Opción de impresión (`VER`)**: Opcional. Si se pasa este argumento, se mostrarán los arreglos antes y después de ser ordenados.
+1. **Metodo de resolucion de colisiones (`<Metodo>`)**: Una letra arbitraria que ayudara a seleccionar el metodo de resolucion de colisiones
+• (L) Reasignación Prueba Lineal
+• (c) Reasignación Prueba Cuadrática
+• (D) Reasignación Doble Dirección Hash
 
 ## Ejemplo de Ejecución
 
-Se deben recibir 1 parámetro obligatorio y 1 opcional.
+Se deben recibir 1 parámetro obligatorio
 
-### Sin mostrar los arreglos:
-./ordenamiento <tamaño_arreglo>
-
-ejemplo~
-./ordenamiento 1000
-
-### Mostrando los arreglos:
-./ordenamiento <tamaño_arreglo> VER
+./hash <Metodo({L/C/D})>
 
 ejemplo~
-./ordenamiento 1000 VER
+./hash L

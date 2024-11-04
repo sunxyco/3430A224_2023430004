@@ -1,10 +1,6 @@
-//23, 42, 5, 66, 14, 43, 59, 81, 37, 49, 28, 55, 94, 80 y 64
-//Escriba un programa en C++ que permita el ingreso y la b´usqueda de informaci´on
-
 #include <iostream>
 using namespace std;
 #include <cstdlib> // Para rand() y srand()
-
 
 int mi_hash(int numero, int cantidad) {
     int index;
@@ -54,8 +50,6 @@ void resolver_colicion_lineal(int *v, int n, int clave) {
     } else {
         cout << "no hay espacios disponibles\n";
     }
-
-    //return index_comparacion;
 }
 
 void resolver_colicion_cuadrado(int *v, int n, int clave) {
@@ -94,9 +88,6 @@ void resolver_collision_doblehash(int *v, int n, int clave) {
     int d = mi_hash(clave, n);
     int index_comparacion = d;
 
-    /*
-    Mientras ((DX <= N) y (V[DX] <> VACIO) y (V[DX] <> K) y (DX <> D) Repetir
-        Hacer DX <- H’(DX)*/
     while ((index_comparacion < n) && (v[index_comparacion] != -1)) {
         index_comparacion = mi_segundo_hash(index_comparacion, n);
         cout << "revisando [" << index_comparacion << "]" << endl;
@@ -142,8 +133,6 @@ void obtener_array_aleatorio(int cantidad_numeros, int *array){
         cout << array[i] << ", ";
     }
     cout << "]\n\n";
-
-    //return array;
 }
 
 void busqueda(int *v, int n, int clav) {
